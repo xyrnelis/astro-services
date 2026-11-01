@@ -1,0 +1,238 @@
+{
+  "channel_order": [
+    "luminaries",
+    "mercury",
+    "venus",
+    "mars",
+    "jupiter",
+    "saturn"
+  ],
+  "cases": [
+    {
+      "id": "1997_Buda-Koshelevo",
+      "positions": {
+        "Sun": {
+          "sign": "Capricorn",
+          "house": 11
+        },
+        "Moon": {
+          "sign": "Aquarius",
+          "house": 12
+        },
+        "Mercury": {
+          "sign": "Capricorn",
+          "house": 10
+        },
+        "Proserpina": {
+          "sign": "Scorpio",
+          "house": 8
+        },
+        "Venus": {
+          "sign": "Capricorn",
+          "house": 10
+        },
+        "Chiron": {
+          "sign": "Scorpio",
+          "house": 7
+        },
+        "Mars": {
+          "sign": "Libra",
+          "house": 7
+        },
+        "Pluto": {
+          "sign": "Sagittarius",
+          "house": 9
+        },
+        "Jupiter": {
+          "sign": "Capricorn",
+          "house": 11
+        },
+        "Neptune": {
+          "sign": "Capricorn",
+          "house": 11
+        },
+        "Saturn": {
+          "sign": "Aries",
+          "house": 1
+        },
+        "Uranus": {
+          "sign": "Aquarius",
+          "house": 12
+        }
+      },
+      "expected_matrix": [
+        [
+          0,
+          1,
+          1,
+          0,
+          3,
+          4
+        ],
+        [
+          1,
+          0,
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          1,
+          2,
+          2,
+          3,
+          2,
+          2
+        ],
+        [
+          0,
+          2,
+          3,
+          0,
+          2,
+          2
+        ],
+        [
+          3,
+          2,
+          2,
+          2,
+          2,
+          5
+        ],
+        [
+          4,
+          2,
+          2,
+          2,
+          5,
+          2
+        ]
+      ],
+      "expected_row_totals": [
+        9,
+        9,
+        12,
+        9,
+        16,
+        17
+      ],
+      "expected_grand_total": 72,
+      "expected_global_top": "saturn"
+    },
+    {
+      "id": "1933_Tokyo",
+      "positions": {
+        "Sun": {
+          "sign": "Aquarius",
+          "house": 5
+        },
+        "Moon": {
+          "sign": "Sagittarius",
+          "house": 3
+        },
+        "Mercury": {
+          "sign": "Pisces",
+          "house": 5
+        },
+        "Proserpina": {
+          "sign": "Libra",
+          "house": 12
+        },
+        "Venus": {
+          "sign": "Aquarius",
+          "house": 5
+        },
+        "Chiron": {
+          "sign": "Taurus",
+          "house": 8
+        },
+        "Mars": {
+          "sign": "Virgo",
+          "house": 12
+        },
+        "Pluto": {
+          "sign": "Cancer",
+          "house": 10
+        },
+        "Jupiter": {
+          "sign": "Virgo",
+          "house": 12
+        },
+        "Neptune": {
+          "sign": "Virgo",
+          "house": 11
+        },
+        "Saturn": {
+          "sign": "Aquarius",
+          "house": 4
+        },
+        "Uranus": {
+          "sign": "Aries",
+          "house": 7
+        }
+      },
+      "expected_matrix": [
+        [
+          2,
+          2,
+          2,
+          1,
+          1,
+          3
+        ],
+        [
+          2,
+          0,
+          1,
+          1,
+          4,
+          0
+        ],
+        [
+          2,
+          1,
+          2,
+          1,
+          0,
+          3
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          3,
+          2
+        ],
+        [
+          1,
+          4,
+          0,
+          3,
+          4,
+          1
+        ],
+        [
+          3,
+          0,
+          3,
+          2,
+          1,
+          2
+        ]
+      ],
+      "expected_row_totals": [
+        11,
+        8,
+        9,
+        8,
+        13,
+        11
+      ],
+      "expected_grand_total": 60,
+      "expected_global_top": "jupiter"
+    }
+  ]
+}

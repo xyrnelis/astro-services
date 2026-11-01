@@ -1,0 +1,14 @@
+# Dependencies and generated website
+node_modules/
+dist/
+
+# Local settings
+.env
+.env.*
+!.env.example
+
+# System and editor files
+.DS_Store
+__MACOSX/
+.vscode/
+*.log

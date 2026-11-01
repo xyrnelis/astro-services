@@ -1,0 +1,4 @@
+Swiss Ephemeris is licensed under the GNU Affero General Public License v3.0.
+
+License text: https://www.gnu.org/licenses/agpl-3.0.html
+Swiss Ephemeris licensing: https://www.astro.com/swisseph/swephinfo_e.htm
