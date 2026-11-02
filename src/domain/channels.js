@@ -26,10 +26,22 @@ export const PLANET_LABELS = {
   Jupiter: zodiacIcon('jupiter', 'Юпитер'), Neptune: zodiacIcon('neptune', 'Нептун'), Saturn: zodiacIcon('saturn', 'Сатурн'), Uranus: zodiacIcon('uranus-1', 'Уран'),
 };
 
+export const PLANET_NAMES = {
+  Sun: 'Солнце', Moon: 'Луна', Mercury: 'Меркурий', Proserpina: 'Прозерпина',
+  Venus: 'Венера', Chiron: 'Хирон', Mars: 'Марс', Pluto: 'Плутон',
+  Jupiter: 'Юпитер', Neptune: 'Нептун', Saturn: 'Сатурн', Uranus: 'Уран',
+};
+
 export const SIGN_LABELS = {
   Aries: zodiacIcon('aries', 'Овен'), Taurus: zodiacIcon('taurus', 'Телец'), Gemini: zodiacIcon('gemini', 'Близнецы'), Cancer: zodiacIcon('cancer', 'Рак'), Leo: zodiacIcon('leo', 'Лев'), Virgo: zodiacIcon('virgo', 'Дева'),
   Libra: zodiacIcon('libra', 'Весы'), Scorpio: zodiacIcon('scorpio', 'Скорпион'), Sagittarius: zodiacIcon('sagittarius', 'Стрелец'), Capricorn: zodiacIcon('capricorn-2', 'Козерог'),
   Aquarius: zodiacIcon('aquarius', 'Водолей'), Pisces: zodiacIcon('pisces', 'Рыбы'),
+};
+
+export const SIGN_NAMES_IN = {
+  Aries: 'Овне', Taurus: 'Тельце', Gemini: 'Близнецах', Cancer: 'Раке', Leo: 'Льве', Virgo: 'Деве',
+  Libra: 'Весах', Scorpio: 'Скорпионе', Sagittarius: 'Стрельце', Capricorn: 'Козероге',
+  Aquarius: 'Водолее', Pisces: 'Рыбах',
 };
 
 export const HOUSE_LABELS = {
@@ -40,13 +52,3 @@ export const HOUSE_LABELS = {
 
 export const CONJUNCTION_SYMBOL = zodiacIcon('conjunction', 'Соединение');
 
-export const channelIndexById = Object.fromEntries(CHANNELS.map((channel, index) => [channel.id, index]));
-export const channelByPlanet = Object.fromEntries(
-  CHANNELS.flatMap((channel) => channel.planets.map((planet) => [planet, channel.id])),
-);
-export const channelBySign = Object.fromEntries(
-  CHANNELS.flatMap((channel) => channel.signs.map((sign) => [sign, channel.id])),
-);
-export const channelByHouse = Object.fromEntries(
-  CHANNELS.flatMap((channel) => channel.houses.map((house) => [house, channel.id])),
-);

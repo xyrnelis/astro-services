@@ -26,7 +26,7 @@ Requires Node.js 22 or later. The current static build does not require installi
 
 ```sh
 npm run build
-node scripts/serve.mjs
+npm run start
 ```
 
 Open `http://127.0.0.1:4173`.

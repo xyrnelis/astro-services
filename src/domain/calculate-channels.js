@@ -5,11 +5,13 @@ import {
   SIGN_LABELS,
   HOUSE_LABELS,
   CONJUNCTION_SYMBOL,
+} from './channels.js';
+import {
   channelByHouse,
   channelByPlanet,
   channelBySign,
   channelIndexById,
-} from './channels.js';
+} from './channel-relations.js';
 
 const stepReasons = {
   1: (planet, sign) => `${PLANET_LABELS[planet]} в знаке ${SIGN_LABELS[sign]}`,

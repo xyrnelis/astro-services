@@ -1,4 +1,13 @@
-import { CHANNELS, DISPLAY_PLANETS, PLANET_LABELS, SIGN_LABELS, HOUSE_LABELS, channelIndexById } from '../domain/channels.js';
+import {
+  CHANNELS,
+  DISPLAY_PLANETS,
+  PLANET_LABELS,
+  PLANET_NAMES,
+  SIGN_LABELS,
+  SIGN_NAMES_IN,
+  HOUSE_LABELS,
+} from '../domain/channels.js';
+import { channelIndexById } from '../domain/channel-relations.js';
 
 const STEP_LABELS = {
   7: 'Планеты в домах канала', 8: 'Планеты в знаках канала',
@@ -77,12 +86,22 @@ function formatBirthDetails(birth) {
   return `<p class="birth-summary">${day}.${month}.${year} ${escapeHtml(time)} (${escapeHtml(birth.timeZone)}), ${escapeHtml(birth.cityLabel)}, ${birth.latitude.toFixed(4)}, ${birth.longitude.toFixed(4)}</p>`;
 }
 
-export function renderPositions(chart, birth) {
+function renderReceptions(receptions, positions) {
+  const items = receptions.map(({ planets: [first, second] }) => {
+    const firstText = `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]}`;
+    const secondText = `${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}`;
+    return `<li>${escapeHtml(firstText)} ↔ ${escapeHtml(secondText)}</li>`;
+  }).join('');
+  const content = items || '<p class="empty-receptions">Взаимные рецепции не обнаружены</p>';
+  return `<section class="receptions"><h3>Взаимные рецепции</h3>${items ? `<ul>${items}</ul>` : content}</section>`;
+}
+
+export function renderPositions(chart, birth, receptions = []) {
   const rows = DISPLAY_PLANETS.map((planet) => {
     const position = chart.positions[planet];
     return `<tr><th scope="row">${PLANET_LABELS[planet]} ${SIGN_LABELS[position.sign]} ${escapeHtml(position.formattedLongitude ?? '—')}</th><td>${HOUSE_LABELS[position.house]}</td></tr>`;
   }).join('');
-  return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+  return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div>${renderReceptions(receptions, chart.positions)}</section>`;
 }
 
 export function renderResults({ calculation, chart, birth }) {

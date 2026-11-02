@@ -54,16 +54,33 @@ it('renders all channels, expandable steps, and the Proserpina notice', () => {
     timeZone: 'Europe/Minsk',
     latitude: 53.2,
     longitude: 29.2,
-  });
+  }, [
+    { id: 'Venus:Mars', planets: ['Venus', 'Mars'] },
+  ]);
   assert.match(positionsMarkup, /astro-symbol-fallback/);
   assert.match(positionsMarkup, /11\.01\.1997 10:02:00 \(Europe\/Minsk\), Буда-Кошелёво, Беларусь, 53\.2000, 29\.2000/);
   assert.doesNotMatch(positionsMarkup, /Источник|Swiss Ephemeris/);
   assert.match(positionsMarkup, /<th>Планета<\/th><th>Дом<\/th>/);
   assert.match(positionsMarkup, /house-eleven\.svg/);
+  assert.match(positionsMarkup, /Взаимные рецепции/);
+  assert.match(positionsMarkup, /Венера в Козероге ↔ Марс в Весах/);
   assert.doesNotMatch(positionsMarkup, /<th>Знак<\/th>|<th>Координата<\/th>/);
   assert.ok(positionsMarkup.indexOf('sun.svg') < positionsMarkup.indexOf('moon.svg'));
   assert.ok(positionsMarkup.indexOf('chiron.svg') < positionsMarkup.indexOf('astro-symbol-fallback'));
   assert.doesNotMatch(positionsMarkup, /Не совпадает с Sotis/);
+});
+
+it('renders the reception empty state', () => {
+  const markup = renderPositions({ positions: {
+    Sun: { sign: 'Aries', house: 1 }, Moon: { sign: 'Aries', house: 1 },
+    Mercury: { sign: 'Aries', house: 1 }, Venus: { sign: 'Aries', house: 1 },
+    Mars: { sign: 'Aries', house: 1 }, Jupiter: { sign: 'Aries', house: 1 },
+    Saturn: { sign: 'Aries', house: 1 }, Uranus: { sign: 'Aries', house: 1 },
+    Neptune: { sign: 'Aries', house: 1 }, Pluto: { sign: 'Aries', house: 1 },
+    Chiron: { sign: 'Aries', house: 1 }, Proserpina: { sign: 'Aries', house: 1 },
+  } }, undefined, []);
+
+  assert.match(markup, /Взаимные рецепции не обнаружены/);
 });
 
 it('highlights one or two next-best matrix values, but not three', () => {

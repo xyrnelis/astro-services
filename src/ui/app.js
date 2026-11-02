@@ -1,4 +1,5 @@
 import { calculateChannels } from '../domain/calculate-channels.js';
+import { findReceptions } from '../domain/find-receptions.js';
 import { calculateChart, getBrowserEphemeris } from '../astronomy/chart-calculator.js';
 import { searchCity } from '../astronomy/geo.js';
 import { resolveBirthInstant } from '../astronomy/time.js';
@@ -109,6 +110,7 @@ export function initializeApp(root = document) {
       });
       const ephemeris = await getBrowserEphemeris();
       const chart = await calculateChart({ ...birth, latitude: selectedCity.latitude, longitude: selectedCity.longitude }, ephemeris);
+      const receptions = findReceptions(chart.positions);
       const calculation = calculateChannels(chart.positions);
       const birthDetails = {
         ...birth,
@@ -118,7 +120,7 @@ export function initializeApp(root = document) {
         latitude: selectedCity.latitude,
         longitude: selectedCity.longitude,
       };
-      positions.innerHTML = renderPositions(chart, birthDetails);
+      positions.innerHTML = renderPositions(chart, birthDetails, receptions);
       results.innerHTML = renderResults({ calculation, chart, birth: birthDetails });
       if (updateUrl) {
         const sharedUrl = writeSharedBirth(pageWindow.location.href, {
