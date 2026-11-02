@@ -1,4 +1,11 @@
-Swiss Ephemeris is licensed under the GNU Affero General Public License v3.0.
+Swiss Ephemeris is dual-licensed under the GNU Affero General Public License
+(version 3) and a proprietary professional license from Astrodienst AG.
+Astro Services uses the AGPL licensing option via @kuntay/swisseph 0.2.2
+(AGPL-3.0-or-later).
 
-License text: https://www.gnu.org/licenses/agpl-3.0.html
-Swiss Ephemeris licensing: https://www.astro.com/swisseph/swephinfo_e.htm
+The complete GNU AGPL v3 license text for the Astro Services application is
+provided in the top-level LICENSE file and at /LICENSE on the published site.
+
+Swiss Ephemeris: https://www.astro.com/swisseph/swephinfo_e.htm
+WebAssembly wrapper source: https://github.com/kuntayerkus/swisseph-wasm
+GNU AGPL license: https://www.gnu.org/licenses/agpl-3.0.html
