@@ -1,4 +1,4 @@
-import { calculateChannels } from '../domain/calculate-channels.js';
+import { calculateWithReceptions } from '../domain/calculate-with-receptions.js';
 import { findReceptions } from '../domain/find-receptions.js';
 import { calculateChart, getBrowserEphemeris } from '../astronomy/chart-calculator.js';
 import { searchCity } from '../astronomy/geo.js';
@@ -18,10 +18,40 @@ export function initializeApp(root = document) {
   const results = root.querySelector('#results');
   const positions = root.querySelector('#positions-results');
   const clearButton = root.querySelector('#clear-form');
+  const receptionToggle = root.querySelector('#reception-toggle');
+  const receptionStepsToggle = root.querySelector('#reception-steps-toggle');
+  const receptionHousesToggle = root.querySelector('#reception-houses-toggle');
+  const receptionSignsToggle = root.querySelector('#reception-signs-toggle');
+  const receptionConjunctionsToggle = root.querySelector('#reception-conjunctions-toggle');
   const pageWindow = root.defaultView ?? window;
   let matches = [];
   let selectedCity = null;
   let searchRequest = 0;
+  let completedCalculation = null;
+
+  const receptionOptionKey = () => [
+    receptionStepsToggle.checked,
+    receptionHousesToggle.checked,
+    receptionSignsToggle.checked,
+    receptionConjunctionsToggle.checked,
+  ].map((enabled) => (enabled ? '1' : '0')).join('');
+  const updateReceptionControls = () => {
+    const enabled = !receptionToggle.disabled && receptionToggle.checked;
+    receptionStepsToggle.disabled = !enabled;
+    receptionHousesToggle.disabled = !enabled;
+    receptionSignsToggle.disabled = !enabled;
+    if (!receptionSignsToggle.checked) receptionConjunctionsToggle.checked = false;
+    receptionConjunctionsToggle.disabled = !enabled || !receptionSignsToggle.checked;
+  };
+  const renderCompletedResults = () => {
+    if (completedCalculation) {
+      results.innerHTML = renderResults(
+        completedCalculation,
+        receptionToggle.checked,
+        receptionOptionKey(),
+      );
+    }
+  };
 
   const setStatus = (message, kind = '') => {
     status.textContent = message;
@@ -86,12 +116,30 @@ export function initializeApp(root = document) {
     cityResults.replaceChildren();
     results.replaceChildren();
     positions.replaceChildren();
+    completedCalculation = null;
+    receptionToggle.checked = false;
+    receptionToggle.disabled = true;
+    receptionStepsToggle.checked = true;
+    receptionHousesToggle.checked = false;
+    receptionSignsToggle.checked = false;
+    receptionConjunctionsToggle.checked = false;
+    updateReceptionControls();
     offsetField.hidden = true;
     locationOutput.textContent = 'Город не выбран';
     setStatus('');
     const clearedUrl = clearSharedBirth(pageWindow.location.href);
     pageWindow.history.replaceState(null, '', `${clearedUrl.pathname}${clearedUrl.search}${clearedUrl.hash}`);
   });
+
+  receptionToggle.addEventListener('change', () => {
+    updateReceptionControls();
+    renderCompletedResults();
+  });
+  [receptionStepsToggle, receptionHousesToggle, receptionSignsToggle, receptionConjunctionsToggle]
+    .forEach((toggle) => toggle.addEventListener('change', () => {
+      updateReceptionControls();
+      renderCompletedResults();
+    }));
 
   const calculate = async ({ updateUrl = true } = {}) => {
     if (!selectedCity) {
@@ -101,6 +149,10 @@ export function initializeApp(root = document) {
     setStatus('Загружаем эфемериды и рассчитываем карту...');
     results.replaceChildren();
     positions.replaceChildren();
+    completedCalculation = null;
+    receptionToggle.checked = false;
+    receptionToggle.disabled = true;
+    updateReceptionControls();
     try {
       const birth = resolveBirthInstant({
         date: form.elements.date.value,
@@ -111,7 +163,7 @@ export function initializeApp(root = document) {
       const ephemeris = await getBrowserEphemeris();
       const chart = await calculateChart({ ...birth, latitude: selectedCity.latitude, longitude: selectedCity.longitude }, ephemeris);
       const receptions = findReceptions(chart.positions);
-      const calculation = calculateChannels(chart.positions);
+      const result = calculateWithReceptions(chart.positions, receptions);
       const birthDetails = {
         ...birth,
         cityLabel: selectedCity.label,
@@ -121,7 +173,10 @@ export function initializeApp(root = document) {
         longitude: selectedCity.longitude,
       };
       positions.innerHTML = renderPositions(chart, birthDetails, receptions);
-      results.innerHTML = renderResults({ calculation, chart, birth: birthDetails });
+      completedCalculation = { positions: chart.positions, pairs: receptions, result };
+      receptionToggle.disabled = false;
+      updateReceptionControls();
+      renderCompletedResults();
       if (updateUrl) {
         const sharedUrl = writeSharedBirth(pageWindow.location.href, {
           date: birthDetails.date,

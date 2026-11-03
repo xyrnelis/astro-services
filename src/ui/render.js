@@ -19,34 +19,39 @@ function escapeHtml(value) {
   }[character]));
 }
 
-function renderMatrix(calculation) {
+function formatScore(score, includeReceptions) {
+  if (!includeReceptions || score.reception === 0 || score.base === score.total) return String(score.base);
+  return `${score.base} / ${score.total} <span class="reception-count">(+${score.reception} рец)</span>`;
+}
+
+function renderMatrix(result, includeReceptions) {
+  const selectedRankings = result.ranking;
   const headings = CHANNELS.map((channel) => `<th scope="col">${channel.label}</th>`).join('');
   const highlightedByChannel = [];
   const rows = CHANNELS.map((channel, rowIndex) => {
-    const values = calculation.matrix[rowIndex];
-    const highest = Math.max(...values);
-    const runnerUp = Math.max(...values.filter((value) => value < highest));
-    const runnerUpCount = values.filter((value) => value === runnerUp).length;
-    const highlighted = values
-      .map((value, index) => ({ value, index }))
-      .filter(({ value }) => value === highest || (runnerUpCount <= 2 && value === runnerUp))
-      .sort((left, right) => right.value - left.value || left.index - right.index)
-      .map(({ value, index }) => `${CHANNELS[index].label} ${value}`)
+    const values = result.matrix[rowIndex];
+    const highlights = selectedRankings.rowHighlights[rowIndex].entries;
+    const highlightByChannel = Object.fromEntries(highlights.map((entry) => [entry.targetChannel, entry.level]));
+    const highlighted = highlights
+      .map(({ targetChannel }) => {
+        const targetIndex = channelIndexById[targetChannel];
+        return `${CHANNELS[targetIndex].label} ${formatScore(values[targetIndex], includeReceptions)}`;
+      })
       .join(', ');
     highlightedByChannel.push(`<li><strong>${channel.label}</strong><span>${highlighted}</span></li>`);
-    const cells = values.map((value) => {
-      const className = value === highest
-        ? 'matrix-highest'
-        : runnerUpCount <= 2 && value === runnerUp ? 'matrix-runner-up' : '';
-      return `<td${className ? ` class="${className}"` : ''}>${value}</td>`;
+    const cells = values.map((value, targetIndex) => {
+      const level = highlightByChannel[CHANNELS[targetIndex].id];
+      const className = level === 'highest' ? 'matrix-highest' : level === 'runnerUp' ? 'matrix-runner-up' : '';
+      return `<td${className ? ` class="${className}"` : ''}>${formatScore(value, includeReceptions)}</td>`;
     }).join('');
-    return `<tr><th scope="row">${channel.label}</th>${cells}<td class="total-cell">${calculation.rowTotals[rowIndex]}</td></tr>`;
+    return `<tr><th scope="row">${channel.label}</th>${cells}<td class="total-cell">${formatScore(result.rowTotals[rowIndex], includeReceptions)}</td></tr>`;
   }).join('');
-  const leaders = calculation.globalTopByTotal.map((id) => CHANNELS[channelIndexById[id]].label).join(', ');
-  const ranking = CHANNELS
-    .map((channel, index) => ({ channel, total: calculation.rowTotals[index], index }))
-    .sort((left, right) => right.total - left.total || left.index - right.index)
-    .map(({ channel, total }) => `<li>${channel.label}: ${total}</li>`)
+  const leaders = selectedRankings.globalLeaders.map((id) => CHANNELS[channelIndexById[id]].label).join(', ');
+  const ranking = selectedRankings.overallOrder
+    .map(({ channelId }) => {
+      const index = channelIndexById[channelId];
+      return `<li>${CHANNELS[index].label}: ${formatScore(result.rowTotals[index], includeReceptions)}</li>`;
+    })
     .join('');
   return `<section class="result-section"><h2>Матрица каналов</h2><div class="table-scroll"><table class="matrix"><thead><tr><th scope="col">Исходный канал</th>${headings}<th scope="col">Сумма</th></tr></thead><tbody>${rows}</tbody></table></div><div class="matrix-summary"><section class="summary-block"><h3>Верхние значения по каналам</h3><ul class="matrix-highlights">${highlightedByChannel.join('')}</ul></section><section class="summary-block"><h3>Глобальный максимум</h3><p>${leaders}</p></section><section class="summary-block"><h3>Ранжирование по сумме</h3><ol class="ranking">${ranking}</ol></section></div></section>`;
 }
@@ -72,10 +77,32 @@ function renderSteps(channel, events) {
   }).join('');
 }
 
-function renderChannelDetails(calculation) {
+function receptionTitle(pair, positions) {
+  const [first, second] = pair.planets;
+  return `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]} ↔ ${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}`;
+}
+
+function renderReceptionStep(channel, result, positions, pairs) {
+  const pairById = Object.fromEntries(pairs.map((pair) => [pair.id, pair]));
+  const groups = result.receptions
+    .map((contribution) => ({
+      contribution,
+      events: contribution.events.filter((event) => event.sourceChannel === channel.id),
+    }))
+    .filter(({ events }) => events.length)
+    .map(({ contribution, events }) => {
+      const title = receptionTitle(pairById[contribution.pairId], positions);
+      return `<section class="reception-group"><h5>${escapeHtml(title)}</h5><ul>${events.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>Шаг ${event.step}: ${event.reason}</span></li>`).join('')}</ul></section>`;
+    });
+  const content = groups.length ? groups.join('') : '<p class="empty-step">0 значений</p>';
+  return `<section class="step reception-step"><h4>Шаг 9: Взаимные рецепции</h4>${content}</section>`;
+}
+
+function renderChannelDetails(result, positions, pairs, includeReceptions) {
   return `<section class="result-section"><h2>Подробный расчёт</h2><div class="channel-list">${CHANNELS.map((channel) => {
-    const events = calculation.events.filter((event) => event.sourceChannel === channel.id);
-    return `<details class="channel-row" data-channel="${channel.id}"><summary>${channel.label}</summary><div class="channel-body">${renderSteps(channel, events)}</div></details>`;
+    const events = result.baseEvents.filter((event) => event.sourceChannel === channel.id);
+    const receptionStep = includeReceptions ? renderReceptionStep(channel, result, positions, pairs) : '';
+    return `<details class="channel-row" data-channel="${channel.id}"><summary>${channel.label}</summary><div class="channel-body">${renderSteps(channel, events)}${receptionStep}</div></details>`;
   }).join('')}</div></section>`;
 }
 
@@ -88,9 +115,7 @@ function formatBirthDetails(birth) {
 
 function renderReceptions(receptions, positions) {
   const items = receptions.map(({ planets: [first, second] }) => {
-    const firstText = `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]}`;
-    const secondText = `${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}`;
-    return `<li>${escapeHtml(firstText)} ↔ ${escapeHtml(secondText)}</li>`;
+    return `<li>${escapeHtml(receptionTitle({ planets: [first, second] }, positions))}</li>`;
   }).join('');
   const content = items || '<p class="empty-receptions">Взаимные рецепции не обнаружены</p>';
   return `<section class="receptions"><h3>Взаимные рецепции</h3>${items ? `<ul>${items}</ul>` : content}</section>`;
@@ -104,8 +129,20 @@ export function renderPositions(chart, birth, receptions = []) {
   return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div>${renderReceptions(receptions, chart.positions)}</section>`;
 }
 
-export function renderResults({ calculation, chart, birth }) {
-  return `${renderMatrix(calculation)}${renderChannelDetails(calculation)}`;
+export function renderResults({ positions, pairs, result }, includeReceptions = false, optionKey = '1000') {
+  const calculation = result.base.calculation;
+  const selected = includeReceptions
+    ? result.variants[optionKey]
+    : {
+      matrix: calculation.matrix.map((row) => row.map((points) => ({ base: points, reception: 0, total: points }))),
+      rowTotals: calculation.rowTotals.map((points) => ({ base: points, reception: 0, total: points })),
+      ranking: result.base.ranking,
+      receptions: [],
+    };
+  return `${renderMatrix(selected, includeReceptions)}${renderChannelDetails({
+    ...selected,
+    baseEvents: calculation.events,
+  }, positions, pairs, includeReceptions)}`;
 }
 
 export function renderCityMatches(matches) {

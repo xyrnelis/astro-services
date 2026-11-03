@@ -14,7 +14,7 @@ describe('calculateChannels', () => {
 
       assert.deepEqual(result.matrix, fixture.expected_matrix);
       assert.deepEqual(result.rowTotals, fixture.expected_row_totals);
-      assert.equal(result.grandTotal, fixture.expected_grand_total);
+      assert.ok(!('grandTotal' in result));
       assert.ok(result.globalTopByTotal.includes(fixture.expected_global_top));
       assert.equal(result.isSymmetric, true);
 

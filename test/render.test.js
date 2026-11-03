@@ -1,7 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { it } from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateChannels } from '../src/domain/calculate-channels.js';
+import { buildRankingSnapshot } from '../src/domain/calculate-channels.js';
+import { calculateWithReceptions } from '../src/domain/calculate-with-receptions.js';
 import { renderPositions, renderResults } from '../src/ui/render.js';
 
 const fixtures = JSON.parse(
@@ -11,21 +12,13 @@ const fixtures = JSON.parse(
 it('renders all channels, expandable steps, and the Proserpina notice', () => {
   const positions = fixtures.cases[0].positions;
   const markup = renderResults({
-    calculation: calculateChannels(positions),
-    chart: { positions: Object.fromEntries(Object.entries(positions).map(([planet, value]) => [planet, {
+    positions: Object.fromEntries(Object.entries(positions).map(([planet, value]) => [planet, {
       ...value,
       formattedLongitude: '00°00′00″',
       source: 'Swiss Ephemeris',
-    }])) },
-    birth: {
-      cityLabel: 'Буда-Кошелёво, Беларусь',
-      date: '1997-01-11',
-      time: '10:02',
-      latitude: 53.2,
-      longitude: 29.2,
-      utc: new Date('1997-01-11T08:02:00Z'),
-      appliedOffset: '+02:00',
-    },
+    }])),
+    pairs: [],
+    result: calculateWithReceptions(positions, []),
   });
 
   for (const channel of ['Светила', 'Меркурий', 'Венера', 'Марс', 'Юпитер', 'Сатурн']) {
@@ -84,28 +77,58 @@ it('renders the reception empty state', () => {
 });
 
 it('highlights one or two next-best matrix values, but not three', () => {
+  const values = [
+    [9, 8, 8, 1, 0, 0],
+    [9, 8, 8, 8, 0, 0],
+    [1, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0],
+  ];
+  const rowTotals = [26, 33, 1, 1, 1, 1];
   const markup = renderResults({
-    calculation: {
-      matrix: [
-        [9, 8, 8, 1, 0, 0],
-        [9, 8, 8, 8, 0, 0],
-        [1, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 0, 0],
-      ],
-      rowTotals: [26, 33, 1, 1, 1, 1],
-      grandTotal: 63,
-      events: [],
-      rowLeaders: [[], [], [], [], [], []],
-      globalTopByTotal: ['mercury'],
-      isSymmetric: false,
+    positions: {},
+    pairs: [],
+    result: {
+      base: {
+        calculation: { matrix: values, rowTotals, events: [] },
+        ranking: buildRankingSnapshot(values, rowTotals),
+      },
+      variants: {},
     },
-    chart: { positions: {} },
   });
 
   const rows = markup.match(/<tr>.*?<\/tr>/g);
   assert.match(rows[1], /matrix-runner-up/g);
   assert.equal((rows[1].match(/matrix-runner-up/g) ?? []).length, 2);
   assert.doesNotMatch(rows[2], /matrix-runner-up/);
+});
+
+it('renders cached reception-inclusive scores and Step 9 only when enabled', () => {
+  const positions = {
+    Sun: { sign: 'Gemini', house: 3 }, Moon: { sign: 'Leo', house: 5 },
+    Mercury: { sign: 'Virgo', house: 6 }, Proserpina: { sign: 'Sagittarius', house: 9 },
+    Venus: { sign: 'Aries', house: 7 }, Chiron: { sign: 'Pisces', house: 12 },
+    Mars: { sign: 'Taurus', house: 8 }, Pluto: { sign: 'Scorpio', house: 1 },
+    Jupiter: { sign: 'Capricorn', house: 10 }, Neptune: { sign: 'Aquarius', house: 11 },
+    Saturn: { sign: 'Cancer', house: 4 }, Uranus: { sign: 'Libra', house: 2 },
+  };
+  const pairs = [{ id: 'Venus:Mars', planets: ['Venus', 'Mars'] }];
+  const state = { positions, pairs, result: calculateWithReceptions(positions, pairs) };
+  const baseline = renderResults(state);
+  const receptionInclusive = renderResults(state, true);
+
+  assert.doesNotMatch(baseline, /Шаг 9|\(\+\d+ рец\)/);
+  assert.match(receptionInclusive, /Шаг 9: Взаимные рецепции/);
+  assert.match(receptionInclusive, /Венера в Овне ↔ Марс в Тельце/);
+  assert.match(receptionInclusive, /\(\+\d+ рец\)/);
+});
+
+it('omits zero reception breakdowns from the reception-inclusive view', () => {
+  const positions = fixtures.cases[0].positions;
+  const state = { positions, pairs: [], result: calculateWithReceptions(positions, []) };
+  const markup = renderResults(state, true);
+
+  assert.doesNotMatch(markup, /рец\)/);
+  assert.doesNotMatch(markup, /\d+ \/ \d+/);
 });

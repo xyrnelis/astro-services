@@ -35,6 +35,17 @@
       <section id="positions-results" class="positions-results" aria-live="polite"></section>
       </div>
       <p id="status" class="status" aria-live="polite"></p>
+      <section class="result-settings" aria-labelledby="result-settings-title">
+        <h2 id="result-settings-title">Настройки результатов</h2>
+        <label class="reception-toggle"><input id="reception-toggle" type="checkbox" disabled />Учитывать рецепции</label>
+        <p class="reception-description">Добавляет к исходным баллам начисления за обмен положениями планет во взаимной рецепции. Исходные баллы сохраняются.</p>
+        <div class="reception-options">
+          <label><input id="reception-steps-toggle" type="checkbox" checked disabled />Учитывать шаги 7–8</label>
+          <label><input id="reception-houses-toggle" type="checkbox" disabled />Учитывать обмен домами одного канала</label>
+          <label><input id="reception-signs-toggle" type="checkbox" disabled />Учитывать обмен знаками одного канала</label>
+          <label class="reception-option-dependent"><input id="reception-conjunctions-toggle" type="checkbox" disabled />Учитывать соединения при обмене знаками одного канала</label>
+        </div>
+      </section>
       <section id="results" class="results" aria-live="polite"></section>
       <footer aria-label="Информация о лицензиях" style="margin-top:32px; padding-top:16px; border-top:1px solid #d8e0de; color:#52615c; font-size:13px;">
         <a href="https://github.com/xyrnelis/astro-services" target="_blank" rel="noopener noreferrer">Исходный код (GNU AGPL v3)</a>

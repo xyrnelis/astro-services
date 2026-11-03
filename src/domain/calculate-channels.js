@@ -24,6 +24,14 @@ const stepReasons = {
   8: (planet, sign) => `${PLANET_LABELS[planet]} в знаке ${SIGN_LABELS[sign]}`,
 };
 
+export function createStepReason(step, fields) {
+  const reason = stepReasons[step];
+  if (step === 5 || step === 6) {
+    return reason(fields.sourcePlanet, fields.matchedPlanet, fields.matchedSign);
+  }
+  return reason(fields.sourcePlanet, fields.matchedSign ?? fields.matchedHouse);
+}
+
 function validatePositions(positions) {
   for (const planet of PLANETS) {
     const position = positions[planet];
@@ -33,7 +41,7 @@ function validatePositions(positions) {
   }
 }
 
-export function calculateChannels(positions) {
+export function calculateChannelRows(positions, sourceChannels = CHANNELS) {
   validatePositions(positions);
 
   const matrix = CHANNELS.map(() => CHANNELS.map(() => 0));
@@ -53,7 +61,7 @@ export function calculateChannels(positions) {
     });
   };
 
-  for (const source of CHANNELS) {
+  for (const source of sourceChannels) {
     const [primary, secondary] = source.planets;
     const primaryPosition = positions[primary];
     const secondaryPosition = positions[secondary];
@@ -122,17 +130,52 @@ export function calculateChannels(positions) {
     }
   }
 
-  const rowTotals = matrix.map((row) => row.reduce((total, points) => total + points, 0));
-  const grandTotal = rowTotals.reduce((total, points) => total + points, 0);
-  const rowLeaders = matrix.map((row) => {
+  return { matrix, events };
+}
+
+export function buildRankingSnapshot(matrix, rowTotals) {
+  const rowHighlights = matrix.map((row, sourceIndex) => {
     const highest = Math.max(...row);
-    return CHANNELS.filter((channel, index) => row[index] === highest).map((channel) => channel.id);
+    const runnerUp = Math.max(...row.filter((value) => value < highest));
+    const runnerUpCount = row.filter((value) => value === runnerUp).length;
+    const entries = row
+      .map((points, targetIndex) => ({ points, targetIndex }))
+      .filter(({ points }) => points === highest || (runnerUpCount <= 2 && points === runnerUp))
+      .sort((left, right) => right.points - left.points || left.targetIndex - right.targetIndex)
+      .map(({ points, targetIndex }) => ({
+        targetChannel: CHANNELS[targetIndex].id,
+        points,
+        level: points === highest ? 'highest' : 'runnerUp',
+      }));
+    return { sourceChannel: CHANNELS[sourceIndex].id, entries };
   });
   const highestTotal = Math.max(...rowTotals);
-  const globalTopByTotal = CHANNELS
+  const globalLeaders = CHANNELS
     .filter((channel, index) => rowTotals[index] === highestTotal)
     .map((channel) => channel.id);
+  const overallOrder = CHANNELS
+    .map((channel, index) => ({ channelId: channel.id, points: rowTotals[index], index }))
+    .sort((left, right) => right.points - left.points || left.index - right.index)
+    .map(({ channelId, points }) => ({ channelId, points }));
+
+  return { rowHighlights, globalLeaders, overallOrder };
+}
+
+export function calculateChannels(positions) {
+  const { matrix, events } = calculateChannelRows(positions);
+  const rowTotals = matrix.map((row) => row.reduce((total, points) => total + points, 0));
+  const rankings = buildRankingSnapshot(matrix, rowTotals);
+  const rowLeaders = rankings.rowHighlights.map(({ entries }) => entries
+    .filter((entry) => entry.level === 'highest')
+    .map((entry) => entry.targetChannel));
   const isSymmetric = matrix.every((row, source) => row.every((value, target) => value === matrix[target][source]));
 
-  return { matrix, events, rowTotals, grandTotal, rowLeaders, globalTopByTotal, isSymmetric };
+  return {
+    matrix,
+    events,
+    rowTotals,
+    rowLeaders,
+    globalTopByTotal: rankings.globalLeaders,
+    isSymmetric,
+  };
 }
