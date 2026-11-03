@@ -23,11 +23,29 @@ export function initializeApp(root = document) {
   const receptionHousesToggle = root.querySelector('#reception-houses-toggle');
   const receptionSignsToggle = root.querySelector('#reception-signs-toggle');
   const receptionConjunctionsToggle = root.querySelector('#reception-conjunctions-toggle');
+  const receptionHelpButtons = [...root.querySelectorAll('[data-reception-help]')];
   const pageWindow = root.defaultView ?? window;
   let matches = [];
   let selectedCity = null;
   let searchRequest = 0;
   let completedCalculation = null;
+  let activeReceptionHelp = null;
+
+  const closeReceptionHelp = () => {
+    if (!activeReceptionHelp) return;
+    const popover = root.querySelector(`#${activeReceptionHelp.getAttribute('aria-controls')}`);
+    popover.hidden = true;
+    activeReceptionHelp.setAttribute('aria-expanded', 'false');
+    activeReceptionHelp = null;
+  };
+  const openReceptionHelp = (button) => {
+    if (activeReceptionHelp === button) return;
+    closeReceptionHelp();
+    const popover = root.querySelector(`#${button.getAttribute('aria-controls')}`);
+    popover.hidden = false;
+    button.setAttribute('aria-expanded', 'true');
+    activeReceptionHelp = button;
+  };
 
   const receptionOptionKey = () => [
     receptionStepsToggle.checked,
@@ -140,6 +158,31 @@ export function initializeApp(root = document) {
       updateReceptionControls();
       renderCompletedResults();
     }));
+  receptionHelpButtons.forEach((button) => {
+    const option = button.closest('.reception-option');
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (activeReceptionHelp === button) closeReceptionHelp();
+      else openReceptionHelp(button);
+    });
+    button.addEventListener('focus', () => openReceptionHelp(button));
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openReceptionHelp(button);
+      }
+    });
+    option.addEventListener('mouseenter', () => openReceptionHelp(button));
+    option.addEventListener('mouseleave', () => {
+      if (!option.contains(root.activeElement)) closeReceptionHelp();
+    });
+  });
+  root.addEventListener('click', (event) => {
+    if (!event.target.closest('.reception-option')) closeReceptionHelp();
+  });
+  root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeReceptionHelp();
+  });
 
   const calculate = async ({ updateUrl = true } = {}) => {
     if (!selectedCity) {
