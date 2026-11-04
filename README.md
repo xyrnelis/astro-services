@@ -50,7 +50,7 @@ The running application includes a visible link to this source repository and li
 **Third-party components retain their own copyright and licensing notices:**
 
 - **Swiss Ephemeris**, by Dieter Koch and Alois Treindl / Astrodienst AG, used through [`@kuntay/swisseph@0.2.2`](https://github.com/kuntayerkus/swisseph-wasm): AGPL-3.0-or-later. [Swiss Ephemeris licensing](https://www.astro.com/swisseph/swephinfo_e.htm).
-- **Zodiac Fonts** SVG symbols: SIL Open Font License 1.1, including reserved font name terms. See [`public/zodiacfonts/OFL.txt`](public/zodiacfonts/OFL.txt).
+- **Astro icon SVG sprite**: symbols from Zodiac Fonts, Noto Sans Symbols, and Noto Sans Symbols 2 under the SIL Open Font License 1.1. See [`public/astro-icons/LICENSES/`](public/astro-icons/LICENSES/).
 
 See [`public/NOTICE.html`](public/NOTICE.html) for the notice also shipped with the hosted application.
 

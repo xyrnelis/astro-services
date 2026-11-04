@@ -1,0 +1,7 @@
+<!-- Derived editable path outlines from Noto Sans Symbols Bold (font version 2.001).
+Copyright 2016 Google LLC. All Rights Reserved.
+Licensed under SIL OFL 1.1. Source: https://github.com/notofonts/symbols
+See ../../../LICENSES/Noto-Sans-Symbols-OFL.txt. This file contains paths, not embedded font data. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 866 512">
+  <g fill="currentColor" transform="translate(52.618 445.000) scale(0.529412 -0.529412)"><path d="M3 0 240 368 17 714H187L334 470L478 714H649L425 359L666 0H490L332 257L173 0ZM706 0V87L793 116V599L706 627V714H1033V627L946 599V116L1033 87V0ZM1107 0V87L1194 116V599L1107 627V714H1434V627L1347 599V116L1434 87V0Z" transform="translate(0 0)" /></g>
+</svg>

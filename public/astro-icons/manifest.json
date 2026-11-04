@@ -1,0 +1,660 @@
+{
+  "version": 2,
+  "notes": "Selected Noto Roman houses as default; editable optical-weight Zodiac symbols; original Zodiac Chiron retained; excluded Noto Chiron and legacy Roman houses.",
+  "icons": [
+    {
+      "id": "planet-sun",
+      "file": "source/planets/planet-sun.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Sun",
+      "labelRu": "Солнце",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4389,
+        "strokeWidth": 20,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-moon",
+      "file": "source/planets/planet-moon.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Moon",
+      "labelRu": "Луна",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4444,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-mercury",
+      "file": "source/planets/planet-mercury.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Mercury",
+      "labelRu": "Меркурий",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.0802,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-venus",
+      "file": "source/planets/planet-venus.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Venus",
+      "labelRu": "Венера",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.0833,
+        "strokeWidth": 15,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-mars",
+      "file": "source/planets/planet-mars.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Mars",
+      "labelRu": "Марс",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.45,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-jupiter",
+      "file": "source/planets/planet-jupiter.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Jupiter",
+      "labelRu": "Юпитер",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.1672,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-saturn",
+      "file": "source/planets/planet-saturn.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Saturn",
+      "labelRu": "Сатурн",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.0741,
+        "strokeWidth": 14,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-uranus",
+      "file": "source/planets/planet-uranus.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Uranus",
+      "labelRu": "Уран",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.428,
+        "strokeWidth": 13,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-neptune",
+      "file": "source/planets/planet-neptune.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Neptune",
+      "labelRu": "Нептун",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.068,
+        "strokeWidth": 14,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-pluto",
+      "file": "source/planets/planet-pluto.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Pluto",
+      "labelRu": "Плутон",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4335,
+        "strokeWidth": 17,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-chiron",
+      "file": "source/planets/planet-chiron.svg",
+      "viewBox": "0 0 512 512",
+      "group": "planets",
+      "name": "Chiron",
+      "labelRu": "Хирон",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4389,
+        "strokeWidth": 16,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-aries",
+      "file": "source/signs/sign-aries.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Aries",
+      "labelRu": "Овен",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4444,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-taurus",
+      "file": "source/signs/sign-taurus.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Taurus",
+      "labelRu": "Телец",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4335,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-gemini",
+      "file": "source/signs/sign-gemini.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Gemini",
+      "labelRu": "Близнецы",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4389,
+        "strokeWidth": 19,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-cancer",
+      "file": "source/signs/sign-cancer.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Cancer",
+      "labelRu": "Рак",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.5878,
+        "strokeWidth": 11,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-leo",
+      "file": "source/signs/sign-leo.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Leo",
+      "labelRu": "Лев",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.071,
+        "strokeWidth": 13,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-virgo",
+      "file": "source/signs/sign-virgo.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Virgo",
+      "labelRu": "Дева",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.2161,
+        "strokeWidth": 11,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-libra",
+      "file": "source/signs/sign-libra.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Libra",
+      "labelRu": "Весы",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4389,
+        "strokeWidth": 18,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-scorpio",
+      "file": "source/signs/sign-scorpio.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Scorpio",
+      "labelRu": "Скорпион",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.0959,
+        "strokeWidth": 11,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-sagittarius",
+      "file": "source/signs/sign-sagittarius.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Sagittarius",
+      "labelRu": "Стрелец",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4444,
+        "strokeWidth": 17,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-capricorn",
+      "file": "source/signs/sign-capricorn.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Capricorn",
+      "labelRu": "Козерог",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.45,
+        "strokeWidth": 16,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-aquarius",
+      "file": "source/signs/sign-aquarius.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Aquarius",
+      "labelRu": "Водолей",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.415,
+        "strokeWidth": 15,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "sign-pisces",
+      "file": "source/signs/sign-pisces.svg",
+      "viewBox": "0 0 512 512",
+      "group": "signs",
+      "name": "Pisces",
+      "labelRu": "Рыбы",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4444,
+        "strokeWidth": 17,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "aspect-conjunction",
+      "file": "source/aspects/aspect-conjunction.svg",
+      "viewBox": "0 0 512 512",
+      "group": "aspects",
+      "name": "Conjunction",
+      "labelRu": "Соединение",
+      "source": "zodiacfonts-free",
+      "opticalStyle": {
+        "scale": 1.4444,
+        "strokeWidth": 19,
+        "targetHeightAtViewBox512": 377,
+        "maxWidthAtViewBox512": 416
+      }
+    },
+    {
+      "id": "planet-proserpina",
+      "file": "source/planets/planet-proserpina.svg",
+      "viewBox": "0 0 1024 1024",
+      "group": "planets",
+      "name": "Proserpina",
+      "labelRu": "Прозерпина",
+      "source": "noto-sans-symbols2",
+      "glyph": "⯘",
+      "codepoint": "U+2BD8",
+      "opticalStyle": {
+        "scale": 1.045,
+        "strokeWidth": 24,
+        "bracketStrokeWidth": 70,
+        "bracketOffsetGlyphUnits": 50,
+        "note": "three editable paths; bracket/circle optical weights differ"
+      }
+    },
+    {
+      "id": "house-roman-01",
+      "file": "source/houses/roman/house-roman-01.svg",
+      "viewBox": "0 0 282 512",
+      "group": "houses/roman",
+      "name": "House 1 (Roman I)",
+      "labelRu": "Дом 1 (I)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "I",
+      "codepoint": "U+2160",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-02",
+      "file": "source/houses/roman/house-roman-02.svg",
+      "viewBox": "0 0 493 512",
+      "group": "houses/roman",
+      "name": "House 2 (Roman II)",
+      "labelRu": "Дом 2 (II)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "II",
+      "codepoint": "U+2161",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-03",
+      "file": "source/houses/roman/house-roman-03.svg",
+      "viewBox": "0 0 706 512",
+      "group": "houses/roman",
+      "name": "House 3 (Roman III)",
+      "labelRu": "Дом 3 (III)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "III",
+      "codepoint": "U+2162",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-04",
+      "file": "source/houses/roman/house-roman-04.svg",
+      "viewBox": "0 0 649 512",
+      "group": "houses/roman",
+      "name": "House 4 (Roman IV)",
+      "labelRu": "Дом 4 (IV)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "IV",
+      "codepoint": "U+2163",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-05",
+      "file": "source/houses/roman/house-roman-05.svg",
+      "viewBox": "0 0 456 512",
+      "group": "houses/roman",
+      "name": "House 5 (Roman V)",
+      "labelRu": "Дом 5 (V)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "V",
+      "codepoint": "U+2164",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-06",
+      "file": "source/houses/roman/house-roman-06.svg",
+      "viewBox": "0 0 649 512",
+      "group": "houses/roman",
+      "name": "House 6 (Roman VI)",
+      "labelRu": "Дом 6 (VI)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "VI",
+      "codepoint": "U+2165",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-07",
+      "file": "source/houses/roman/house-roman-07.svg",
+      "viewBox": "0 0 861 512",
+      "group": "houses/roman",
+      "name": "House 7 (Roman VII)",
+      "labelRu": "Дом 7 (VII)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "VII",
+      "codepoint": "U+2166",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-08",
+      "file": "source/houses/roman/house-roman-08.svg",
+      "viewBox": "0 0 1073 512",
+      "group": "houses/roman",
+      "name": "House 8 (Roman VIII)",
+      "labelRu": "Дом 8 (VIII)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "VIII",
+      "codepoint": "U+2167",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-09",
+      "file": "source/houses/roman/house-roman-09.svg",
+      "viewBox": "0 0 654 512",
+      "group": "houses/roman",
+      "name": "House 9 (Roman IX)",
+      "labelRu": "Дом 9 (IX)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "IX",
+      "codepoint": "U+2168",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-10",
+      "file": "source/houses/roman/house-roman-10.svg",
+      "viewBox": "0 0 459 512",
+      "group": "houses/roman",
+      "name": "House 10 (Roman X)",
+      "labelRu": "Дом 10 (X)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "X",
+      "codepoint": "U+2169",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-11",
+      "file": "source/houses/roman/house-roman-11.svg",
+      "viewBox": "0 0 653 512",
+      "group": "houses/roman",
+      "name": "House 11 (Roman XI)",
+      "labelRu": "Дом 11 (XI)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "XI",
+      "codepoint": "U+216A",
+      "variant": "roman"
+    },
+    {
+      "id": "house-roman-12",
+      "file": "source/houses/roman/house-roman-12.svg",
+      "viewBox": "0 0 866 512",
+      "group": "houses/roman",
+      "name": "House 12 (Roman XII)",
+      "labelRu": "Дом 12 (XII)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "XII",
+      "codepoint": "U+216B",
+      "variant": "roman"
+    },
+    {
+      "id": "house-arabic-01",
+      "file": "source/houses/arabic/house-arabic-01.svg",
+      "viewBox": "0 0 298 512",
+      "group": "houses/arabic",
+      "name": "House 1 (Arabic 1)",
+      "labelRu": "Дом 1 (1)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "1",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-02",
+      "file": "source/houses/arabic/house-arabic-02.svg",
+      "viewBox": "0 0 370 512",
+      "group": "houses/arabic",
+      "name": "House 2 (Arabic 2)",
+      "labelRu": "Дом 2 (2)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "2",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-03",
+      "file": "source/houses/arabic/house-arabic-03.svg",
+      "viewBox": "0 0 363 512",
+      "group": "houses/arabic",
+      "name": "House 3 (Arabic 3)",
+      "labelRu": "Дом 3 (3)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "3",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-04",
+      "file": "source/houses/arabic/house-arabic-04.svg",
+      "viewBox": "0 0 396 512",
+      "group": "houses/arabic",
+      "name": "House 4 (Arabic 4)",
+      "labelRu": "Дом 4 (4)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "4",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-05",
+      "file": "source/houses/arabic/house-arabic-05.svg",
+      "viewBox": "0 0 357 512",
+      "group": "houses/arabic",
+      "name": "House 5 (Arabic 5)",
+      "labelRu": "Дом 5 (5)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "5",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-06",
+      "file": "source/houses/arabic/house-arabic-06.svg",
+      "viewBox": "0 0 366 512",
+      "group": "houses/arabic",
+      "name": "House 6 (Arabic 6)",
+      "labelRu": "Дом 6 (6)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "6",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-07",
+      "file": "source/houses/arabic/house-arabic-07.svg",
+      "viewBox": "0 0 373 512",
+      "group": "houses/arabic",
+      "name": "House 7 (Arabic 7)",
+      "labelRu": "Дом 7 (7)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "7",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-08",
+      "file": "source/houses/arabic/house-arabic-08.svg",
+      "viewBox": "0 0 367 512",
+      "group": "houses/arabic",
+      "name": "House 8 (Arabic 8)",
+      "labelRu": "Дом 8 (8)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "8",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-09",
+      "file": "source/houses/arabic/house-arabic-09.svg",
+      "viewBox": "0 0 367 512",
+      "group": "houses/arabic",
+      "name": "House 9 (Arabic 9)",
+      "labelRu": "Дом 9 (9)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "9",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-10",
+      "file": "source/houses/arabic/house-arabic-10.svg",
+      "viewBox": "0 0 654 512",
+      "group": "houses/arabic",
+      "name": "House 10 (Arabic 10)",
+      "labelRu": "Дом 10 (10)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "10",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-11",
+      "file": "source/houses/arabic/house-arabic-11.svg",
+      "viewBox": "0 0 606 512",
+      "group": "houses/arabic",
+      "name": "House 11 (Arabic 11)",
+      "labelRu": "Дом 11 (11)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "11",
+      "variant": "arabic"
+    },
+    {
+      "id": "house-arabic-12",
+      "file": "source/houses/arabic/house-arabic-12.svg",
+      "viewBox": "0 0 660 512",
+      "group": "houses/arabic",
+      "name": "House 12 (Arabic 12)",
+      "labelRu": "Дом 12 (12)",
+      "source": "noto-sans-symbols-bold",
+      "glyph": "12",
+      "variant": "arabic"
+    }
+  ]
+}

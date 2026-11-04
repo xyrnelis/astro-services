@@ -12,18 +12,37 @@ export const DISPLAY_PLANETS = [
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Chiron', 'Proserpina',
 ];
 
-function zodiacIcon(file, label) {
-  return `<img class="astro-symbol" src="./zodiacfonts/${file}.svg" alt="${label}" title="${label}" />`;
+const ROMAN_HOUSE_VIEW_BOXES = {
+  1: '0 0 282 512', 2: '0 0 493 512', 3: '0 0 706 512', 4: '0 0 649 512',
+  5: '0 0 456 512', 6: '0 0 649 512', 7: '0 0 861 512', 8: '0 0 1073 512',
+  9: '0 0 654 512', 10: '0 0 459 512', 11: '0 0 653 512', 12: '0 0 866 512',
+};
+
+function astroIcon(id, label, viewBox = '0 0 512 512', className = '') {
+  return `<svg class="astro-symbol${className}" role="img" aria-label="${label}" title="${label}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet"><use href="./astro-icons/astro-icons.svg#${id}"></use></svg>`;
 }
 
-function zodiacFallback(symbol, label) {
-  return `<span class="astro-symbol astro-symbol-fallback" role="img" aria-label="${label}" title="${label}">${symbol}</span>`;
+function romanHouseIcon(house) {
+  return astroIcon(
+    `house-roman-${String(house).padStart(2, '0')}`,
+    `${house} дом`,
+    ROMAN_HOUSE_VIEW_BOXES[house],
+    ' astro-symbol-house',
+  );
+}
+
+function planetIcon(id, label, viewBox) {
+  return astroIcon(id, label, viewBox, ' astro-symbol-planet');
+}
+
+function signIcon(id, label) {
+  return astroIcon(id, label, undefined, ' astro-symbol-sign');
 }
 
 export const PLANET_LABELS = {
-  Sun: zodiacIcon('sun', 'Солнце'), Moon: zodiacIcon('moon', 'Луна'), Mercury: zodiacIcon('mercury', 'Меркурий'), Proserpina: zodiacFallback('⚳', 'Прозерпина'),
-  Venus: zodiacIcon('venus', 'Венера'), Chiron: zodiacIcon('chiron', 'Хирон'), Mars: zodiacIcon('mars', 'Марс'), Pluto: zodiacIcon('pluto-1', 'Плутон'),
-  Jupiter: zodiacIcon('jupiter', 'Юпитер'), Neptune: zodiacIcon('neptune', 'Нептун'), Saturn: zodiacIcon('saturn', 'Сатурн'), Uranus: zodiacIcon('uranus-1', 'Уран'),
+  Sun: planetIcon('planet-sun', 'Солнце'), Moon: planetIcon('planet-moon', 'Луна'), Mercury: planetIcon('planet-mercury', 'Меркурий'), Proserpina: planetIcon('planet-proserpina', 'Прозерпина', '0 0 1024 1024'),
+  Venus: planetIcon('planet-venus', 'Венера'), Chiron: planetIcon('planet-chiron', 'Хирон'), Mars: planetIcon('planet-mars', 'Марс'), Pluto: planetIcon('planet-pluto', 'Плутон'),
+  Jupiter: planetIcon('planet-jupiter', 'Юпитер'), Neptune: planetIcon('planet-neptune', 'Нептун'), Saturn: planetIcon('planet-saturn', 'Сатурн'), Uranus: planetIcon('planet-uranus', 'Уран'),
 };
 
 export const PLANET_NAMES = {
@@ -33,9 +52,9 @@ export const PLANET_NAMES = {
 };
 
 export const SIGN_LABELS = {
-  Aries: zodiacIcon('aries', 'Овен'), Taurus: zodiacIcon('taurus', 'Телец'), Gemini: zodiacIcon('gemini', 'Близнецы'), Cancer: zodiacIcon('cancer', 'Рак'), Leo: zodiacIcon('leo', 'Лев'), Virgo: zodiacIcon('virgo', 'Дева'),
-  Libra: zodiacIcon('libra', 'Весы'), Scorpio: zodiacIcon('scorpio', 'Скорпион'), Sagittarius: zodiacIcon('sagittarius', 'Стрелец'), Capricorn: zodiacIcon('capricorn-2', 'Козерог'),
-  Aquarius: zodiacIcon('aquarius', 'Водолей'), Pisces: zodiacIcon('pisces', 'Рыбы'),
+  Aries: signIcon('sign-aries', 'Овен'), Taurus: signIcon('sign-taurus', 'Телец'), Gemini: signIcon('sign-gemini', 'Близнецы'), Cancer: signIcon('sign-cancer', 'Рак'), Leo: signIcon('sign-leo', 'Лев'), Virgo: signIcon('sign-virgo', 'Дева'),
+  Libra: signIcon('sign-libra', 'Весы'), Scorpio: signIcon('sign-scorpio', 'Скорпион'), Sagittarius: signIcon('sign-sagittarius', 'Стрелец'), Capricorn: signIcon('sign-capricorn', 'Козерог'),
+  Aquarius: signIcon('sign-aquarius', 'Водолей'), Pisces: signIcon('sign-pisces', 'Рыбы'),
 };
 
 export const SIGN_NAMES_IN = {
@@ -45,10 +64,10 @@ export const SIGN_NAMES_IN = {
 };
 
 export const HOUSE_LABELS = {
-  1: zodiacIcon('house-one', '1 дом'), 2: zodiacIcon('house-two', '2 дом'), 3: zodiacIcon('house-three', '3 дом'), 4: zodiacIcon('house-four', '4 дом'),
-  5: zodiacIcon('house-five', '5 дом'), 6: zodiacIcon('house-six', '6 дом'), 7: zodiacIcon('house-seven', '7 дом'), 8: zodiacIcon('house-eight', '8 дом'),
-  9: zodiacIcon('house-nine', '9 дом'), 10: zodiacIcon('house-ten', '10 дом'), 11: zodiacIcon('house-eleven', '11 дом'), 12: zodiacIcon('house-twelve', '12 дом'),
+  1: romanHouseIcon(1), 2: romanHouseIcon(2), 3: romanHouseIcon(3), 4: romanHouseIcon(4),
+  5: romanHouseIcon(5), 6: romanHouseIcon(6), 7: romanHouseIcon(7), 8: romanHouseIcon(8),
+  9: romanHouseIcon(9), 10: romanHouseIcon(10), 11: romanHouseIcon(11), 12: romanHouseIcon(12),
 };
 
-export const CONJUNCTION_SYMBOL = zodiacIcon('conjunction', 'Соединение');
+export const CONJUNCTION_SYMBOL = astroIcon('aspect-conjunction', 'Соединение');
 

@@ -18,7 +18,7 @@ h2 { margin-bottom: 16px; font-size: 18px; }
 label { display: flex; flex-direction: column; gap: 6px; color: #45505d; font-size: 13px; font-weight: 650; }
 input { width: 100%; min-height: 40px; border: 1px solid #bcc9c5; border-radius: 4px; padding: 8px 10px; color: #1d2633; background: #fff; }
 input:focus { outline: 3px solid #b8dfcc; border-color: #397a59; }
-.astro-symbol { width: 20px; height: 20px; vertical-align: middle; }.astro-symbol-fallback { display: inline-flex; align-items: center; justify-content: center; font-size: 15px; line-height: 1; }.positions .astro-symbol { width: 25px; height: 25px; }.positions .astro-symbol-fallback { font-size: 25px; }
+.astro-symbol { --astro-symbol-height: 20px; display: inline-block; width: var(--astro-symbol-height); height: var(--astro-symbol-height); color: currentColor; vertical-align: middle; overflow: visible; }.astro-symbol-planet, .astro-symbol-sign { --astro-symbol-height: 22px; }.astro-symbol-house { --astro-symbol-height: 16px; width: auto; }.astro-symbol use { fill: currentColor; stroke: currentColor; }.positions .astro-symbol { --astro-symbol-height: 25px; }.positions .astro-symbol-planet, .positions .astro-symbol-sign { --astro-symbol-height: 22px; }.positions .astro-symbol-house { --astro-symbol-height: 16px; width: auto; }
 .primary-button, .secondary-button, .city-option { min-height: 40px; border-radius: 4px; border: 1px solid #397a59; padding: 8px 12px; font-weight: 700; }
 .primary-button { color: #fff; background: #286a4a; }
 .secondary-button { color: #286a4a; background: #f8fbf9; }

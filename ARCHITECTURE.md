@@ -77,7 +77,7 @@ Form submit or shared URL
 - `scripts/build.mjs` copies `index.html`, `src/` and `public/` into `dist/`.
 - `scripts/serve.mjs` runs a minimal Node HTTP server for `dist/`.
 - Open-Meteo provides geocoding; Swiss Ephemeris browser resources are external.
-- `./zodiacfonts/` contains the referenced SVG assets in the full project.
+- `./astro-icons/astro-icons.svg` contains the referenced astrology icon sprite; its source and license notices are retained under `public/astro-icons/`.
 - The reviewed archive omitted `public/` and `package.json`; the user confirmed both exist.
 
 ## Related documentation
