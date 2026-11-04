@@ -44,7 +44,7 @@ Add reception-specific channel scores for independently exchanged detected pairs
 
 **Acceptance Scenarios:**
 - **AS-01:** **Given** valid original positions, **when** scores are computed, **then** `base` matches [R1], each exchange preserves the input map, and each reception event can be traced to [R4] (BR-01–BR-03, BR-09–BR-11).
-- **AS-02:** **Given** a completed chart and default suboptions, **when** the user enables reception mode, **then** the UI uses `variants['1000']`; switching reception mode off uses `base`, and selecting another valid suboption state uses its matching key (FR-02–FR-04, FR-07–FR-10; [R5]).
+- **AS-02:** **Given** a completed chart and default suboptions, **when** the user enables reception mode, **then** the UI uses `variants['0111']`; switching reception mode off uses `base`, and selecting another valid suboption state uses its matching key (FR-02–FR-04, FR-07–FR-10; [R5]).
 - **AS-03:** **Given** the cases [TC-01–TC-04 in part 2](02-reception-channel-impact-part-2.md) or [TC-05–TC-08 in part 3](02-reception-channel-impact-part-3.md), **when** their exchanges and settings are applied, **then** the exact event multisets and expected totals match those cases.
 - **AS-04:** **Given** overlapping reception pairs or no pairs, **when** scoring runs with reversed pair order or an empty list, **then** the events and totals satisfy BR-09–BR-12.
 
@@ -121,10 +121,10 @@ Add reception-specific channel scores for independently exchanged detected pairs
 - **FR-02:** The system MUST select `base` with reception mode off or `variants[key]` with it on, using the key derived from the four suboptions. Selection MUST only read cached data, with no astronomy, scoring, aggregation, or ranking recomputation.
 - **FR-03:** The system MUST display one `Учитывать рецепции` switch in the separate results-settings panel above the results, initially off. Off disables suboption inputs while retaining their values; the displayed result follows FR-02.
 - **FR-04:** After the permanently visible primary description, the system MUST display four suboptions in this exact order:
-  1. `Учитывать шаги 7–8` (default on).
-  2. `Учитывать обмен домами одного канала` (default off).
-  3. `Учитывать обмен знаками одного канала` (default off).
-  4. `Учитывать соединения при обмене знаками одного канала` (default off).
+  1. `Учитывать шаги 7–8` (default off).
+  2. `Учитывать обмен домами одного канала` (default on).
+  3. `Учитывать обмен знаками одного канала` (default on).
+  4. `Учитывать соединения при обмене знаками одного канала` (default on).
   Options 1–3 are independent. Indent option 4 beneath option 3; disable it while option 3 is off and reset it to off whenever option 3 is turned off.
 - **FR-05:** The system MUST keep the exact primary description permanently visible directly below the main switch. Each suboption label remains visible; its adjacent information-icon popover MUST contain the corresponding exact help text:
   - Primary: `Добавляет к исходным баллам начисления за обмен положениями планет во взаимной рецепции. Исходные баллы сохраняются.`

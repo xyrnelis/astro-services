@@ -136,7 +136,7 @@ export function renderPositions(chart, birth, receptions = []) {
   return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div>${renderReceptions(receptions, chart.positions)}</section>`;
 }
 
-export function renderResults({ positions, pairs, result }, includeReceptions = false, optionKey = '1000') {
+export function renderResults({ positions, pairs, result }, includeReceptions = false, optionKey = '0111') {
   const calculation = result.base.calculation;
   const selected = includeReceptions
     ? result.variants[optionKey]

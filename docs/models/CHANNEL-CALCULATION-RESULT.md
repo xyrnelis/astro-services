@@ -49,7 +49,7 @@ The full set of keys is:
 0011 1011 0111 1111
 ```
 
-- The default suboptions select `1000` when the primary reception switch is on.
+- The default suboptions select `0111` when the primary reception switch is on.
 - A complete result always contains all 12 keys; lookups select an existing entry instead of computing a missing configuration.
 
 ### Score

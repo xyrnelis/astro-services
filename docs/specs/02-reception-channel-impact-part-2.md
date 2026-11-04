@@ -2,7 +2,7 @@
 
 **Status**: Implemented and verified by focused domain and UI tests, full test suite, and production build (2026-11-04).
 
-Continues the **UC-01 Acceptance Scenarios (AS-03)** in [part 1](02-reception-channel-impact.md). This part owns exact default-option inputs and expected score events for TC-01–TC-04.
+Continues the **UC-01 Acceptance Scenarios (AS-03)** in [part 1](02-reception-channel-impact.md). This part owns exact option-key `1000` inputs and expected score events for TC-01–TC-04.
 
 ## Use Case & Testing
 
@@ -12,7 +12,7 @@ Continues the **UC-01 Acceptance Scenarios (AS-03)** in [part 1](02-reception-ch
 
 **Covers:** BR-02, BR-04, BR-08, BR-13; AS-03.
 
-**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; the default suboptions in FR-04.
+**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; option key `1000`.
 **When:** Evaluate the independent exchange: Mars in Scorpio, house 7; Chiron in Libra, house 7.
 **Then:** The complete reception event multiset is:
 
@@ -36,7 +36,7 @@ Step 8 (planets in channel signs): Venus +1 [Chiron]
 
 **Covers:** BR-02, BR-04–BR-05, BR-07–BR-08; AS-03.
 
-**Given:** Mars in Libra, house 6 ↔ Chiron in Scorpio, house 7; default suboptions.
+**Given:** Mars in Libra, house 6 ↔ Chiron in Scorpio, house 7; option key `1000`.
 **When:** Evaluate the exchange: Mars in Scorpio, house 7; Chiron in Libra, house 6.
 **Then:** The complete reception event multiset is:
 
@@ -69,7 +69,7 @@ Step 7 (planets in channel houses): Venus +1 [Chiron]
 
 **Covers:** BR-06, BR-07, BR-10, BR-13; AS-03.
 
-**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; Jupiter in Scorpio, house 7; default suboptions. Initially Chiron/Jupiter share a sign.
+**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; Jupiter in Scorpio, house 7; option key `1000`. Initially Chiron/Jupiter share a sign.
 **When:** Exchange Mars and Chiron; Jupiter stays fixed; Mars/Jupiter now share a sign.
 **Then:** The complete reception event multiset is:
 
@@ -100,7 +100,7 @@ Step 5 (conjunction with P1): Mars +1 [Jupiter; Mars]
 
 **Covers:** BR-06, BR-07, BR-10, BR-13; AS-03.
 
-**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; Jupiter in Scorpio, house 7; Saturn in Libra, house 7; default suboptions. Existing same-sign pairs: Mars/Saturn and Chiron/Jupiter.
+**Given:** Mars in Libra, house 7 ↔ Chiron in Scorpio, house 7; Jupiter in Scorpio, house 7; Saturn in Libra, house 7; option key `1000`. Existing same-sign pairs: Mars/Saturn and Chiron/Jupiter.
 **When:** Exchange Mars and Chiron; Jupiter and Saturn remain fixed; new pairs are Mars/Jupiter and Chiron/Saturn.
 **Then:** The complete reception event multiset is:
 

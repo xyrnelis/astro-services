@@ -145,10 +145,10 @@ export function initializeApp(root = document, services = {}) {
     completedCalculation = null;
     receptionToggle.checked = false;
     receptionToggle.disabled = true;
-    receptionStepsToggle.checked = true;
-    receptionHousesToggle.checked = false;
-    receptionSignsToggle.checked = false;
-    receptionConjunctionsToggle.checked = false;
+    receptionStepsToggle.checked = false;
+    receptionHousesToggle.checked = true;
+    receptionSignsToggle.checked = true;
+    receptionConjunctionsToggle.checked = true;
     updateReceptionControls();
     offsetField.hidden = true;
     locationOutput.textContent = 'Город не выбран';

@@ -35,13 +35,17 @@ it('opens reception help without changing disabled controls and dismisses it acc
   const popover = document.querySelector('#reception-help-steps');
 
   assert.equal(toggle.disabled, true);
+  assert.equal(toggle.checked, false);
+  assert.equal(document.querySelector('#reception-houses-toggle').checked, true);
+  assert.equal(document.querySelector('#reception-signs-toggle').checked, true);
+  assert.equal(document.querySelector('#reception-conjunctions-toggle').checked, true);
   toggle.closest('label').dispatchEvent(new window.MouseEvent('mouseenter'));
   assert.equal(popover.hidden, true);
   help.dispatchEvent(new window.MouseEvent('mouseenter'));
   assert.equal(popover.hidden, false);
   document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
   help.click();
-  assert.equal(toggle.checked, true);
+  assert.equal(toggle.checked, false);
   assert.equal(popover.hidden, false);
   assert.equal(help.getAttribute('aria-expanded'), 'true');
   document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
