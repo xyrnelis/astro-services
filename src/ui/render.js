@@ -21,7 +21,7 @@ function escapeHtml(value) {
 
 function formatScore(score, includeReceptions) {
   if (!includeReceptions || score.reception === 0 || score.base === score.total) return String(score.base);
-  return `${score.base} / ${score.total} <span class="reception-count">(+${score.reception} рец)</span>`;
+  return `${score.base} / ${score.total} <span class="reception-count">(рец +${score.reception})</span>`;
 }
 
 function renderMatrix(result, includeReceptions) {
@@ -77,9 +77,16 @@ function renderSteps(channel, events) {
   }).join('');
 }
 
-function receptionTitle(pair, positions) {
+function receptionAfterTitle(pair, positions) {
   const [first, second] = pair.planets;
-  return `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]} ↔ ${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}`;
+  const firstVirtualPosition = positions[second];
+  const secondVirtualPosition = positions[first];
+  return `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[firstVirtualPosition.sign]}, ${firstVirtualPosition.house} дом ↔ ${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[secondVirtualPosition.sign]}, ${secondVirtualPosition.house} дом`;
+}
+
+function receptionListTitle(pair, positions) {
+  const [first, second] = pair.planets;
+  return `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]}, ${positions[first].house} дом ↔ ${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}, ${positions[second].house} дом`;
 }
 
 function renderReceptionStep(channel, result, positions, pairs) {
@@ -91,7 +98,7 @@ function renderReceptionStep(channel, result, positions, pairs) {
     }))
     .filter(({ events }) => events.length)
     .map(({ contribution, events }) => {
-      const title = receptionTitle(pairById[contribution.pairId], positions);
+      const title = receptionAfterTitle(pairById[contribution.pairId], positions);
       return `<section class="reception-group"><h5>${escapeHtml(title)}</h5><ul>${events.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>Шаг ${event.step}: ${event.reason}</span></li>`).join('')}</ul></section>`;
     });
   const content = groups.length ? groups.join('') : '<p class="empty-step">0 значений</p>';
@@ -115,7 +122,7 @@ function formatBirthDetails(birth) {
 
 function renderReceptions(receptions, positions) {
   const items = receptions.map(({ planets: [first, second] }) => {
-    return `<li>${escapeHtml(receptionTitle({ planets: [first, second] }, positions))}</li>`;
+    return `<li>${escapeHtml(receptionListTitle({ planets: [first, second] }, positions))}</li>`;
   }).join('');
   const content = items || '<p class="empty-receptions">Взаимные рецепции не обнаружены</p>';
   return `<section class="receptions"><h3>Взаимные рецепции</h3>${items ? `<ul>${items}</ul>` : content}</section>`;

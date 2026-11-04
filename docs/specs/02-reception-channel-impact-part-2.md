@@ -1,6 +1,6 @@
 # Feature-02: Default Reception Scoring (part 2)
 
-**Status**: Approved target behavior; implementation conformance not verified.
+**Status**: Implemented and verified by focused domain and UI tests, full test suite, and production build (2026-11-04).
 
 Continues the **UC-01 Acceptance Scenarios (AS-03)** in [part 1](02-reception-channel-impact.md). This part owns exact default-option inputs and expected score events for TC-01–TC-04.
 

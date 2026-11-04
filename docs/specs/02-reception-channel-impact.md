@@ -2,7 +2,7 @@
 
 **Feature Branch**: Not specified
 **Created**: 2026-11-03
-**Status**: Approved target behavior; implementation conformance not verified.
+**Status**: Implemented and verified by focused domain and UI tests, full test suite, and production build (2026-11-04).
 
 ## Purpose and references
 
@@ -133,10 +133,10 @@ Add reception-specific channel scores for independently exchanged detected pairs
   - Option 3: `Начислять баллы при обмене знаками одного канала: Марс в Овне ↔ Плутон в Скорпионе → Марс в Скорпионе, Плутон в Овне (шаги 1, 3, 8). Шаг 8 зависит от настройки «Учитывать шаги 7–8».`
   - Option 4: `Начислять баллы за новые соединения при обмене знаками одного канала (шаги 5–6). До: Плутон в Овне ☌ Юпитер ↔ Марс в Скорпионе ☌ Венера. После: Плутон в Скорпионе ☌ Венера ↔ Марс в Овне ☌ Юпитер.`
 - **FR-06:** The system MUST retain the [R2] positions-panel reception list regardless of score-view selection.
-- **FR-07:** The system MUST not display an overall score. With reception mode off, it MUST show baseline matrix cells, row totals, leaders, and highlights. With reception mode on, each matrix cell and row total with a positive reception contribution MUST show `base / total (+N рец)` with `(+N рец)` visually distinguished; values with zero contribution remain plain baseline numbers. Highlights use the selected ranking snapshot.
+- **FR-07:** The system MUST not display an overall score. With reception mode off, it MUST show baseline matrix cells, row totals, leaders, and highlights. With reception mode on, each matrix cell and row total with a positive reception contribution MUST show `base / total (рец +N)` with `(рец +N)` visually distinguished in green; values with zero contribution remain plain baseline numbers. Highlights use the selected ranking snapshot.
 - **FR-08:** The system MUST show one selected set of `Верхние значения по каналам`, `Глобальный максимум`, and `Ранжирование по сумме`. A reception-mode summary value with a positive contribution shows the same breakdown as FR-07; a zero-contribution value remains a plain baseline number.
 - **FR-09:** The system MUST keep the original steps 1–8 in both modes and append `Шаг 9. Взаимные рецепции` within each source channel only in reception mode.
-- **FR-10:** In Step 9, the system MUST group events by detected pair with original planet/sign labels, displaying a pair only in source channels receiving events. Render each event separately as `Шаг N (краткий смысл шага): Целевой канал +1` with its virtual-position reason; retain duplicates. When a source has none, show `0 значений`.
+- **FR-10:** In Step 9, the system MUST group events by detected pair, displaying a pair only in source channels receiving events. Each pair header MUST show both exchanged planets after their independent reception exchange, including each planet's sign and house: `Марс в Скорпионе, 7 дом ↔ Хирон в Весах, 7 дом`. Render each event separately as `Шаг N (краткий смысл шага): Целевой канал +1` with its virtual-position reason; retain duplicates. When a source has none, show `0 значений`.
 - **FR-11:** Information icons MUST remain available with disabled checkboxes. Desktop hover opens help; touch tap toggles it; keyboard focus and Enter/Space open it. Escape or outside interaction closes it; icon activation never toggles the checkbox. Only one popover may open at once, and it must wrap on narrow screens.
 - **FR-12:** Successful recalculation MUST replace cached results and the detected pair list; clearing the form MUST remove both. Equivalent manual input and shared-URL restoration MUST produce equivalent results and pair lists.
 

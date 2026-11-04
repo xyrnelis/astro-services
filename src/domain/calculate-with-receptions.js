@@ -171,6 +171,9 @@ function createPairContribution(positions, pair, options) {
         positions[planet].sign !== virtualPositions[planet].sign
         && isSameChannelTransition(positions[planet].sign, virtualPositions[planet].sign, channelBySign)
       ));
+      for (const planet of [left, right]) {
+        if (!exchangedPlanets.has(planet)) addCandidate(candidateIds, channelByPlanet[planet]);
+      }
       if (requiresSameChannelOption && !options.includeSameChannelConjunctions) {
         continue;
       }

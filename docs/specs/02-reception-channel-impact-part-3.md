@@ -1,6 +1,6 @@
 # Feature-02: Option-Dependent Reception Scoring (part 3)
 
-**Status**: Approved target behavior; implementation conformance not verified.
+**Status**: Implemented and verified by focused domain and UI tests, full test suite, and production build (2026-11-04).
 
 Continues **UC-01 Acceptance Scenarios (AS-03)** from [part 1](02-reception-channel-impact.md). This part owns the exact option-dependent inputs and events for TC-05–TC-08; the shared test handoff is in [part 2](02-reception-channel-impact-part-2.md).
 

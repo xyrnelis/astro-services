@@ -6,7 +6,15 @@ import { resolveBirthInstant } from '../astronomy/time.js';
 import { renderCityMatches, renderPositions, renderResults } from './render.js';
 import { clearSharedBirth, readSharedBirth, writeSharedBirth } from './share-url.js';
 
-export function initializeApp(root = document) {
+export function initializeApp(root = document, services = {}) {
+  const {
+    calculateWithReceptions: calculateReceptionScores = calculateWithReceptions,
+    findReceptions: detectReceptions = findReceptions,
+    calculateChart: buildChart = calculateChart,
+    getBrowserEphemeris: loadEphemeris = getBrowserEphemeris,
+    searchCity: findCities = searchCity,
+    resolveBirthInstant: resolveBirth = resolveBirthInstant,
+  } = services;
   const form = root.querySelector('#birth-form');
   const cityInput = form.elements.city;
   const citySearch = root.querySelector('#city-search');
@@ -87,7 +95,7 @@ export function initializeApp(root = document) {
     const request = ++searchRequest;
     setStatus('Ищем город...');
     try {
-      matches = await searchCity(cityInput.value);
+      matches = await findCities(cityInput.value);
       if (request !== searchRequest) return;
       cityResults.innerHTML = renderCityMatches(matches);
       setStatus('');
@@ -172,7 +180,7 @@ export function initializeApp(root = document) {
         openReceptionHelp(button);
       }
     });
-    option.addEventListener('mouseenter', () => openReceptionHelp(button));
+    button.addEventListener('mouseenter', () => openReceptionHelp(button));
     option.addEventListener('mouseleave', () => {
       if (!option.contains(root.activeElement)) closeReceptionHelp();
     });
@@ -197,16 +205,16 @@ export function initializeApp(root = document) {
     receptionToggle.disabled = true;
     updateReceptionControls();
     try {
-      const birth = resolveBirthInstant({
+      const birth = resolveBirth({
         date: form.elements.date.value,
         time: form.elements.time.value,
         timeZone: selectedCity.timeZone,
         utcOffset: useOffset.checked ? form.elements.utcOffset.value : undefined,
       });
-      const ephemeris = await getBrowserEphemeris();
-      const chart = await calculateChart({ ...birth, latitude: selectedCity.latitude, longitude: selectedCity.longitude }, ephemeris);
-      const receptions = findReceptions(chart.positions);
-      const result = calculateWithReceptions(chart.positions, receptions);
+      const ephemeris = await loadEphemeris();
+      const chart = await buildChart({ ...birth, latitude: selectedCity.latitude, longitude: selectedCity.longitude }, ephemeris);
+      const receptions = detectReceptions(chart.positions);
+      const result = calculateReceptionScores(chart.positions, receptions);
       const birthDetails = {
         ...birth,
         cityLabel: selectedCity.label,

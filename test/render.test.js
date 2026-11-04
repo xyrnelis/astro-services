@@ -56,7 +56,7 @@ it('renders all channels, expandable steps, and the Proserpina notice', () => {
   assert.match(positionsMarkup, /<th>Планета<\/th><th>Дом<\/th>/);
   assert.match(positionsMarkup, /house-eleven\.svg/);
   assert.match(positionsMarkup, /Взаимные рецепции/);
-  assert.match(positionsMarkup, /Венера в Козероге ↔ Марс в Весах/);
+  assert.match(positionsMarkup, /Венера в Козероге, 10 дом ↔ Марс в Весах, 7 дом/);
   assert.doesNotMatch(positionsMarkup, /<th>Знак<\/th>|<th>Координата<\/th>/);
   assert.ok(positionsMarkup.indexOf('sun.svg') < positionsMarkup.indexOf('moon.svg'));
   assert.ok(positionsMarkup.indexOf('chiron.svg') < positionsMarkup.indexOf('astro-symbol-fallback'));
@@ -118,10 +118,10 @@ it('renders cached reception-inclusive scores and Step 9 only when enabled', () 
   const baseline = renderResults(state);
   const receptionInclusive = renderResults(state, true);
 
-  assert.doesNotMatch(baseline, /Шаг 9|\(\+\d+ рец\)/);
+  assert.doesNotMatch(baseline, /Шаг 9|\(рец \+\d+\)/);
   assert.match(receptionInclusive, /Шаг 9: Взаимные рецепции/);
-  assert.match(receptionInclusive, /Венера в Овне ↔ Марс в Тельце/);
-  assert.match(receptionInclusive, /\(\+\d+ рец\)/);
+  assert.match(receptionInclusive, /Венера в Тельце, 8 дом ↔ Марс в Овне, 7 дом/);
+  assert.match(receptionInclusive, /\(рец \+\d+\)/);
 });
 
 it('omits zero reception breakdowns from the reception-inclusive view', () => {

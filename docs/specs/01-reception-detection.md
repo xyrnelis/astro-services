@@ -38,7 +38,7 @@ AND A in rulersBySign[sign(B)]
 ## User interface
 
 - **UI-01**: Add `Взаимные рецепции` directly beneath the planet positions table.
-- **UI-02**: Display one line per unique pair: `Венера в Овне ↔ Марс в Тельце`.
+- **UI-02**: Display one line per unique pair with each planet's original sign and house: `Венера в Овне, 7 дом ↔ Марс в Тельце, 8 дом`.
 - **UI-03**: Use original signs and plain Russian inflected planet/sign names.
 - **UI-04**: Keep the existing Russian interface and position table unchanged.
 - **UI-05**: If the list is empty, show `Взаимные рецепции не обнаружены`.

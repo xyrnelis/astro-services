@@ -1,6 +1,6 @@
 # Channel Calculation Result Contract
 
-Status: approved target contract for Feature-02; implementation conformance not verified. See [Feature-02 (part 1)](../specs/02-reception-channel-impact.md).
+Status: implemented and verified Feature-02 contract (2026-11-04). See [Feature-02 (part 1)](../specs/02-reception-channel-impact.md).
 
 ## Existing inputs and compatibility
 
@@ -82,7 +82,7 @@ The full set of keys is:
 - `affectedSourceChannels` contains unique source-channel IDs in canonical channel order.
 - Every reception event has `receptionId === pairId`; `step` is its generating step from 1–8, even though it is displayed under Step 9.
 - `base.calculation.events` contains only original awards and has no `receptionId`.
-- Each variant's `receptions` groups are in canonical pair order; each group's events retain their original source channel, target channel, and generation order.
+- Each variant's `receptions` groups preserve the supplied pair order; each group's events retain their original source channel, target channel, and generation order.
 - To display Step 9, resolve `pairId` against the original pair list and resolve original signs against `chart.positions`. Filter a variant's events by `sourceChannel`; show a pair only where it has events. A channel with none displays the empty state specified in Feature-02.
 
 ## RankingSnapshot
@@ -98,7 +98,7 @@ The same baseline [ranking and tie rules](../specs/00-channel-calculation.md#cha
         { targetChannel: 'venus', points: 5, level: 'highest' },
         { targetChannel: 'mars', points: 4, level: 'runnerUp' }
       ]
-    }
+    },
     // Five more source-channel entries.
   ],
   globalLeaders: ['venus'],
