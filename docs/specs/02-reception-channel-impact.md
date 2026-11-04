@@ -119,7 +119,7 @@ Add reception-specific channel scores for independently exchanged detected pairs
 
 - **FR-01:** On each successful chart calculation, the system MUST compute the original `calculateChannels(positions)` result once and build a `base` ranking snapshot. It MUST precompute one reception result, score matrix, totals, event groups, and ranking snapshot per valid option key defined by [R5], using the ranking and tie rules from [R1].
 - **FR-02:** The system MUST select `base` with reception mode off or `variants[key]` with it on, using the key derived from the four suboptions. Selection MUST only read cached data, with no astronomy, scoring, aggregation, or ranking recomputation.
-- **FR-03:** The system MUST display one `Учитывать рецепции` switch in the separate results-settings panel above the results, initially off. Off disables suboption inputs while retaining their values; the displayed result follows FR-02.
+- **FR-03:** The system MUST show the separate results-settings panel above the results only after a successful chart calculation. It MUST hide the panel while no successful result exists, while a new calculation is in progress, and after clearing the form. The panel contains one `Учитывать рецепции` switch, initially off. Off disables suboption inputs while retaining their values; the displayed result follows FR-02.
 - **FR-04:** After the permanently visible primary description, the system MUST display four suboptions in this exact order:
   1. `Учитывать шаги 7–8` (default off).
   2. `Учитывать обмен домами одного канала` (default on).

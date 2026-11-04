@@ -26,6 +26,7 @@ export function initializeApp(root = document, services = {}) {
   const results = root.querySelector('#results');
   const positions = root.querySelector('#positions-results');
   const clearButton = root.querySelector('#clear-form');
+  const resultSettings = root.querySelector('#result-settings');
   const receptionToggle = root.querySelector('#reception-toggle');
   const receptionStepsToggle = root.querySelector('#reception-steps-toggle');
   const receptionHousesToggle = root.querySelector('#reception-houses-toggle');
@@ -150,6 +151,7 @@ export function initializeApp(root = document, services = {}) {
     receptionSignsToggle.checked = true;
     receptionConjunctionsToggle.checked = true;
     updateReceptionControls();
+    resultSettings.hidden = true;
     offsetField.hidden = true;
     locationOutput.textContent = 'Город не выбран';
     setStatus('');
@@ -204,6 +206,7 @@ export function initializeApp(root = document, services = {}) {
     receptionToggle.checked = false;
     receptionToggle.disabled = true;
     updateReceptionControls();
+    resultSettings.hidden = true;
     try {
       const birth = resolveBirth({
         date: form.elements.date.value,
@@ -227,6 +230,7 @@ export function initializeApp(root = document, services = {}) {
       completedCalculation = { positions: chart.positions, pairs: receptions, result };
       receptionToggle.disabled = false;
       updateReceptionControls();
+      resultSettings.hidden = false;
       renderCompletedResults();
       if (updateUrl) {
         const sharedUrl = writeSharedBirth(pageWindow.location.href, {

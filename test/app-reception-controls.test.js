@@ -30,6 +30,7 @@ async function nextTask() {
 it('opens reception help without changing disabled controls and dismisses it accessibly', () => {
   const window = appDocument();
   const { document } = window;
+  assert.equal(document.querySelector('#result-settings').hidden, true);
   const toggle = document.querySelector('#reception-steps-toggle');
   const help = document.querySelector('[data-reception-help="steps"]');
   const popover = document.querySelector('#reception-help-steps');
@@ -103,11 +104,13 @@ it('selects cached variants without recalculation and replaces them for a new ch
   await nextTask();
   await nextTask();
   assert.equal(calculations, 1);
+  assert.equal(document.querySelector('#result-settings').hidden, false);
   document.querySelector('#reception-toggle').click();
   document.querySelector('#reception-houses-toggle').click();
   assert.equal(calculations, 1);
   document.querySelector('#clear-form').click();
   assert.equal(document.querySelector('#results').textContent, '');
+  assert.equal(document.querySelector('#result-settings').hidden, true);
   form.elements.city.value = 'Минск';
   document.querySelector('#city-search').click();
   await nextTask();
