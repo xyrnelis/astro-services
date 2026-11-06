@@ -19,8 +19,15 @@ function escapeHtml(value) {
   }[character]));
 }
 
-function formatScore(score, includeReceptions) {
-  if (!includeReceptions || score.reception === 0 || score.base === score.total) return String(score.base);
+function formatScore(score, composite) {
+  const boundary = score.boundary ?? 0;
+  const reception = score.reception ?? 0;
+  if (!boundary && !reception) return String(score.base);
+  if (composite) {
+    const boundaryText = boundary ? `<span class="boundary-count">+${boundary}${reception ? 'п' : ' погр.'}</span>` : '';
+    const receptionText = reception ? `<span class="reception-count">+${reception}${boundary ? 'р' : ' рец.'}</span>` : '';
+    return `${score.base} / ${score.total} (${[boundaryText, receptionText].filter(Boolean).join(', ')})`;
+  }
   return `${score.base} / ${score.total} <span class="reception-count">(рец +${score.reception})</span>`;
 }
 
@@ -56,7 +63,7 @@ function renderMatrix(result, includeReceptions) {
   return `<section class="result-section"><h2>Матрица каналов</h2><div class="table-scroll"><table class="matrix"><thead><tr><th scope="col">Исходный канал</th>${headings}<th scope="col">Сумма</th></tr></thead><tbody>${rows}</tbody></table></div><div class="matrix-summary"><section class="summary-block"><h3>Верхние значения по каналам</h3><ul class="matrix-highlights">${highlightedByChannel.join('')}</ul></section><section class="summary-block"><h3>Глобальный максимум</h3><p>${leaders}</p></section><section class="summary-block"><h3>Ранжирование по сумме</h3><ol class="ranking">${ranking}</ol></section></div></section>`;
 }
 
-function renderSteps(channel, events) {
+function renderSteps(channel, events, boundaryEvents) {
   const [primary, secondary] = channel.planets.map((planet) => PLANET_LABELS[planet]);
   const labels = {
     1: `${primary} в знаке`,
@@ -69,9 +76,9 @@ function renderSteps(channel, events) {
   };
   return Array.from({ length: 8 }, (_, index) => {
     const step = index + 1;
-    const stepEvents = events.filter((event) => event.step === step);
+    const stepEvents = [...events.filter((event) => event.step === step), ...boundaryEvents.filter((event) => event.step === step).map((event) => ({ ...event, boundary: true }))];
     const items = stepEvents.length
-      ? `<ul>${stepEvents.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>${event.reason}</span></li>`).join('')}</ul>`
+      ? `<ul>${stepEvents.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>${event.reason}${event.boundary ? ' (погр)' : ''}</span></li>`).join('')}</ul>`
       : '<p class="empty-step">0 значений</p>';
     return `<section class="step"><h4>Шаг ${step}: ${labels[step]}</h4>${items}</section>`;
   }).join('');
@@ -89,27 +96,32 @@ function receptionListTitle(pair, positions) {
   return `${PLANET_NAMES[first]} в ${SIGN_NAMES_IN[positions[first].sign]}, ${positions[first].house} дом ↔ ${PLANET_NAMES[second]} в ${SIGN_NAMES_IN[positions[second].sign]}, ${positions[second].house} дом`;
 }
 
-function renderReceptionStep(channel, result, positions, pairs) {
+function renderReceptionStep(channel, result, positions, pairs, includeBoundaries) {
   const pairById = Object.fromEntries(pairs.map((pair) => [pair.id, pair]));
   const groups = result.receptions
     .map((contribution) => ({
       contribution,
       events: contribution.events.filter((event) => event.sourceChannel === channel.id),
+      boundaryEvents: includeBoundaries ? (contribution.boundaryEvents ?? []).filter((event) => event.sourceChannel === channel.id) : [],
     }))
-    .filter(({ events }) => events.length)
-    .map(({ contribution, events }) => {
-      const title = receptionAfterTitle(pairById[contribution.pairId], positions);
-      return `<section class="reception-group"><h5>${escapeHtml(title)}</h5><ul>${events.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>Шаг ${event.step}: ${event.reason}</span></li>`).join('')}</ul></section>`;
+    .filter(({ events, boundaryEvents }) => events.length || boundaryEvents.length)
+    .map(({ contribution, events, boundaryEvents }) => {
+      const pair = pairById[contribution.pairId];
+      const configuration = pair.signs ? ` (${pair.planets.map((planet, index) => `${PLANET_NAMES[planet]} в ${SIGN_NAMES_IN[pair.signs[index]]}`).join(' ↔ ')})` : '';
+      const title = receptionAfterTitle(pair, positions) + configuration;
+      const items = (entries, boundary) => entries.map((event) => `<li><strong>${CHANNELS[event.targetIndex].label} +1</strong><span>Шаг ${event.step}: ${event.reason}${boundary ? ' (погр)' : ''}</span></li>`).join('');
+      return `<section class="reception-group"><h5>${escapeHtml(title)}</h5><ul>${items(events, false)}${items(boundaryEvents, true)}</ul></section>`;
     });
   const content = groups.length ? groups.join('') : '<p class="empty-step">0 значений</p>';
   return `<section class="step reception-step"><h4>Шаг 9: Взаимные рецепции</h4>${content}</section>`;
 }
 
-function renderChannelDetails(result, positions, pairs, includeReceptions) {
+function renderChannelDetails(result, positions, pairs, includeReceptions, includeBoundaries) {
   return `<section class="result-section"><h2>Подробный расчёт</h2><div class="channel-list">${CHANNELS.map((channel) => {
     const events = result.baseEvents.filter((event) => event.sourceChannel === channel.id);
-    const receptionStep = includeReceptions ? renderReceptionStep(channel, result, positions, pairs) : '';
-    return `<details class="channel-row" data-channel="${channel.id}"><summary>${channel.label}</summary><div class="channel-body">${renderSteps(channel, events)}${receptionStep}</div></details>`;
+    const boundaryEvents = includeBoundaries ? (result.boundaries ?? []).flatMap((group) => group.events.filter((event) => event.sourceChannel === channel.id)) : [];
+    const receptionStep = includeReceptions ? renderReceptionStep(channel, result, positions, pairs, includeBoundaries) : '';
+    return `<details class="channel-row" data-channel="${channel.id}"><summary>${channel.label}</summary><div class="channel-body">${renderSteps(channel, events, boundaryEvents)}${receptionStep}</div></details>`;
   }).join('')}</div></section>`;
 }
 
@@ -128,28 +140,59 @@ function renderReceptions(receptions, positions) {
   return `<section class="receptions"><h3>Взаимные рецепции</h3>${items ? `<ul>${items}</ul>` : content}</section>`;
 }
 
-export function renderPositions(chart, birth, receptions = []) {
+function renderBoundaryMemberships(memberships) {
+  if (!memberships.length) return '<section class="receptions"><h3>Пограничности</h3><p class="empty-receptions">Пограничные положения не обнаружены</p></section>';
+  const items = memberships.map((membership) => {
+    const planet = PLANET_LABELS[membership.planetId] ?? escapeHtml(membership.planetId);
+    if (membership.kind === 'sign') {
+      const sign = SIGN_LABELS[membership.addedSign] ?? escapeHtml(membership.addedSign);
+      return `<li>${planet} — знак ${sign}</li>`;
+    }
+    const house = HOUSE_LABELS[membership.addedHouse] ?? escapeHtml(membership.addedHouse);
+    const cusp = HOUSE_LABELS[membership.cuspHouse] ?? escapeHtml(membership.cuspHouse);
+    return `<li>${planet} — дом ${house} (Граница дома ${cusp})</li>`;
+  }).join('');
+  return `<section class="receptions"><h3>Пограничности</h3><ul>${items}</ul></section>`;
+}
+
+function renderBoundaryReceptions(receptions) {
+  if (!receptions.length) return '<section class="receptions"><h3>Взаимные рецепции с пограничностью</h3><p class="empty-receptions">Взаимные рецепции с пограничностью не обнаружены</p></section>';
+  const items = receptions.map(({ planets, signs, triggerIds }) => {
+    const title = planets.map((planet, index) => `${PLANET_NAMES[planet]} в ${SIGN_NAMES_IN[signs[index]]}`).join(' ↔ ');
+    const triggers = triggerIds.map((id) => {
+      const [planet, , sign] = id.split(':');
+      return `${PLANET_LABELS[planet] ?? escapeHtml(planet)} ${SIGN_LABELS[sign] ?? escapeHtml(sign)}`;
+    }).join(', ');
+    return `<li>${escapeHtml(title)} (пограничность: ${triggers})</li>`;
+  }).join('');
+  return `<section class="receptions"><h3>Взаимные рецепции с пограничностью</h3><ul>${items}</ul></section>`;
+}
+
+export function renderPositions(chart, birth, receptions = [], boundaryData) {
+  const { memberships = [], boundaryReceptions = [] } = boundaryData ?? {};
   const rows = DISPLAY_PLANETS.map((planet) => {
     const position = chart.positions[planet];
     return `<tr><th scope="row">${PLANET_LABELS[planet]} ${SIGN_LABELS[position.sign]} ${escapeHtml(position.formattedLongitude ?? '—')}</th><td>${HOUSE_LABELS[position.house]}</td></tr>`;
   }).join('');
-  return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div>${renderReceptions(receptions, chart.positions)}</section>`;
+  return `<section class="result-section positions-section"><h2>Положения объектов</h2>${formatBirthDetails(birth)}<div class="table-scroll"><table class="positions"><thead><tr><th>Планета</th><th>Дом</th></tr></thead><tbody>${rows}</tbody></table></div>${boundaryData ? renderBoundaryMemberships(memberships) : ''}${renderReceptions(receptions, chart.positions)}${boundaryData ? renderBoundaryReceptions(boundaryReceptions) : ''}</section>`;
 }
 
-export function renderResults({ positions, pairs, result }, includeReceptions = false, optionKey = '0111') {
+export function renderResults({ positions, pairs, boundaryReceptions = [], result }, includeReceptions = false, optionKey = '0111', { includeBoundaries = false, boundaryOptionKey = '0111' } = {}) {
   const calculation = result.base.calculation;
-  const selected = includeReceptions
-    ? result.variants[optionKey]
+  const selected = includeReceptions && includeBoundaries
+    ? result.combinedVariants[`${optionKey}:${boundaryOptionKey}`]
+    : includeBoundaries ? result.boundaryVariants[boundaryOptionKey]
+      : includeReceptions ? result.variants[optionKey]
     : {
       matrix: calculation.matrix.map((row) => row.map((points) => ({ base: points, reception: 0, total: points }))),
       rowTotals: calculation.rowTotals.map((points) => ({ base: points, reception: 0, total: points })),
       ranking: result.base.ranking,
       receptions: [],
     };
-  return `${renderMatrix(selected, includeReceptions)}${renderChannelDetails({
+  return `${renderMatrix(selected, Boolean(result.boundaryVariants))}${renderChannelDetails({
     ...selected,
     baseEvents: calculation.events,
-  }, positions, pairs, includeReceptions)}`;
+  }, positions, [...pairs, ...boundaryReceptions], includeReceptions, includeBoundaries)}`;
 }
 
 export function renderCityMatches(matches) {

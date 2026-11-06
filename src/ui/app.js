@@ -1,5 +1,6 @@
-import { calculateWithReceptions } from '../domain/calculate-with-receptions.js';
-import { findReceptions } from '../domain/find-receptions.js';
+import { calculateCombined } from '../domain/calculate-combined.js';
+import { findBoundaryMemberships } from '../domain/find-boundary-memberships.js';
+import { findReceptionLists } from '../domain/find-receptions.js';
 import { calculateChart, getBrowserEphemeris } from '../astronomy/chart-calculator.js';
 import { searchCity } from '../astronomy/geo.js';
 import { resolveBirthInstant } from '../astronomy/time.js';
@@ -8,14 +9,18 @@ import { clearSharedBirth, readSharedBirth, writeSharedBirth } from './share-url
 
 export function initializeApp(root = document, services = {}) {
   const {
-    calculateWithReceptions: calculateReceptionScores = calculateWithReceptions,
-    findReceptions: detectReceptions = findReceptions,
+    calculateCombined: calculateScores = calculateCombined,
+    findBoundaryMemberships: detectMemberships = findBoundaryMemberships,
+    findReceptionLists: detectReceptionLists = findReceptionLists,
+    renderPositions: renderChartPositions = renderPositions,
+    renderResults: renderCalculationResults = renderResults,
     calculateChart: buildChart = calculateChart,
     getBrowserEphemeris: loadEphemeris = getBrowserEphemeris,
     searchCity: findCities = searchCity,
     resolveBirthInstant: resolveBirth = resolveBirthInstant,
   } = services;
   const form = root.querySelector('#birth-form');
+  const timeInput = form.elements.time;
   const cityInput = form.elements.city;
   const citySearch = root.querySelector('#city-search');
   const cityResults = root.querySelector('#city-results');
@@ -32,7 +37,12 @@ export function initializeApp(root = document, services = {}) {
   const receptionHousesToggle = root.querySelector('#reception-houses-toggle');
   const receptionSignsToggle = root.querySelector('#reception-signs-toggle');
   const receptionConjunctionsToggle = root.querySelector('#reception-conjunctions-toggle');
-  const receptionHelpButtons = [...root.querySelectorAll('[data-reception-help]')];
+  const boundaryToggle = root.querySelector('#boundary-toggle');
+  const boundaryStepsToggle = root.querySelector('#boundary-steps-toggle');
+  const boundaryHousesToggle = root.querySelector('#boundary-houses-toggle');
+  const boundarySignsToggle = root.querySelector('#boundary-signs-toggle');
+  const boundaryConjunctionsToggle = root.querySelector('#boundary-conjunctions-toggle');
+  const receptionHelpButtons = [...root.querySelectorAll('[data-reception-help], [data-boundary-help]')];
   const pageWindow = root.defaultView ?? window;
   let matches = [];
   let selectedCity = null;
@@ -70,12 +80,23 @@ export function initializeApp(root = document, services = {}) {
     if (!receptionSignsToggle.checked) receptionConjunctionsToggle.checked = false;
     receptionConjunctionsToggle.disabled = !enabled || !receptionSignsToggle.checked;
   };
+  const boundaryOptionKey = () => [boundaryStepsToggle, boundaryHousesToggle, boundarySignsToggle, boundaryConjunctionsToggle]
+    .map((toggle) => (toggle.checked ? '1' : '0')).join('');
+  const updateBoundaryControls = () => {
+    const enabled = !boundaryToggle.disabled && boundaryToggle.checked;
+    boundaryStepsToggle.disabled = !enabled;
+    boundaryHousesToggle.disabled = !enabled;
+    boundarySignsToggle.disabled = !enabled;
+    if (!boundarySignsToggle.checked) boundaryConjunctionsToggle.checked = false;
+    boundaryConjunctionsToggle.disabled = !enabled || !boundarySignsToggle.checked;
+  };
   const renderCompletedResults = () => {
     if (completedCalculation) {
-      results.innerHTML = renderResults(
+      results.innerHTML = renderCalculationResults(
         completedCalculation,
         receptionToggle.checked,
         receptionOptionKey(),
+        { includeBoundaries: boundaryToggle.checked, boundaryOptionKey: boundaryOptionKey() },
       );
     }
   };
@@ -110,6 +131,10 @@ export function initializeApp(root = document, services = {}) {
     matches = [];
     cityResults.replaceChildren();
     locationOutput.textContent = 'Город не выбран';
+  });
+  timeInput.addEventListener('input', () => {
+    const digits = timeInput.value.replace(/\D/g, '').slice(0, 4);
+    timeInput.value = digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits;
   });
   cityResults.addEventListener('click', (event) => {
     const button = event.target.closest('[data-city-index]');
@@ -151,6 +176,13 @@ export function initializeApp(root = document, services = {}) {
     receptionSignsToggle.checked = true;
     receptionConjunctionsToggle.checked = true;
     updateReceptionControls();
+    boundaryToggle.checked = false;
+    boundaryToggle.disabled = true;
+    boundaryStepsToggle.checked = false;
+    boundaryHousesToggle.checked = true;
+    boundarySignsToggle.checked = true;
+    boundaryConjunctionsToggle.checked = true;
+    updateBoundaryControls();
     resultSettings.hidden = true;
     offsetField.hidden = true;
     locationOutput.textContent = 'Город не выбран';
@@ -166,6 +198,11 @@ export function initializeApp(root = document, services = {}) {
   [receptionStepsToggle, receptionHousesToggle, receptionSignsToggle, receptionConjunctionsToggle]
     .forEach((toggle) => toggle.addEventListener('change', () => {
       updateReceptionControls();
+      renderCompletedResults();
+    }));
+  [boundaryToggle, boundaryStepsToggle, boundaryHousesToggle, boundarySignsToggle, boundaryConjunctionsToggle]
+    .forEach((toggle) => toggle.addEventListener('change', () => {
+      updateBoundaryControls();
       renderCompletedResults();
     }));
   receptionHelpButtons.forEach((button) => {
@@ -206,30 +243,37 @@ export function initializeApp(root = document, services = {}) {
     receptionToggle.checked = false;
     receptionToggle.disabled = true;
     updateReceptionControls();
+    boundaryToggle.checked = false;
+    boundaryToggle.disabled = true;
+    updateBoundaryControls();
     resultSettings.hidden = true;
     try {
+      const birthTime = form.elements.time.value.replace(/:00$/, '');
       const birth = resolveBirth({
         date: form.elements.date.value,
-        time: form.elements.time.value,
+        time: birthTime,
         timeZone: selectedCity.timeZone,
         utcOffset: useOffset.checked ? form.elements.utcOffset.value : undefined,
       });
       const ephemeris = await loadEphemeris();
       const chart = await buildChart({ ...birth, latitude: selectedCity.latitude, longitude: selectedCity.longitude }, ephemeris);
-      const receptions = detectReceptions(chart.positions);
-      const result = calculateReceptionScores(chart.positions, receptions);
+      const memberships = detectMemberships(chart.positions, chart.cusps);
+      const { receptions, boundaryReceptions } = detectReceptionLists(chart.positions, memberships);
+      const result = calculateScores(chart.positions, chart.cusps, memberships, receptions, boundaryReceptions);
       const birthDetails = {
         ...birth,
         cityLabel: selectedCity.label,
         date: form.elements.date.value,
-        time: form.elements.time.value,
+        time: birthTime,
         latitude: selectedCity.latitude,
         longitude: selectedCity.longitude,
       };
-      positions.innerHTML = renderPositions(chart, birthDetails, receptions);
-      completedCalculation = { positions: chart.positions, pairs: receptions, result };
+      positions.innerHTML = renderChartPositions(chart, birthDetails, receptions, { memberships, boundaryReceptions });
+      completedCalculation = { positions: chart.positions, cusps: chart.cusps, pairs: receptions, memberships, boundaryReceptions, result };
       receptionToggle.disabled = false;
       updateReceptionControls();
+      boundaryToggle.disabled = false;
+      updateBoundaryControls();
       resultSettings.hidden = false;
       renderCompletedResults();
       if (updateUrl) {

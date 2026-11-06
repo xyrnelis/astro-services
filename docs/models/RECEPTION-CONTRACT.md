@@ -35,6 +35,28 @@ reception detection's validation boundary.
 
 ## Implementation ownership
 
+`findReceptionLists(positions, memberships)` accepts the same positions and precomputed
+boundary memberships from `findBoundaryMemberships`. It returns `receptions` with the
+unchanged `findReceptions` result and `boundaryReceptions` with additional configurations:
+
+```js
+{
+  id: 'Sun:Saturn:Aquarius:Leo',
+  pairId: 'Sun:Saturn',
+  planets: ['Sun', 'Saturn'],
+  signs: ['Aquarius', 'Leo'],
+  triggerIds: ['Sun:sign:Aquarius']
+}
+```
+
+Each instance ID joins the canonical pair ID and the corresponding ordered signs with
+`:`. Trigger IDs identify each added sign as `planetId:sign:addedSign`, in planet order.
+Only sign memberships participate; duplicate signs are ignored. Each qualifying
+configuration with at least one added sign appears separately, including when its pair
+also qualifies natally. Instances follow canonical pair order, then the Cartesian product
+of each planet's natal sign followed by its distinct added signs in membership order.
+The same reception rules and input position validation apply, and inputs are not mutated.
+
 The `ReceptionPair` JSDoc typedef, canonical pair creation and mutual-rulership predicate
 belong inside `src/domain/find-receptions.js` while they have no second consumer.
 Do not create separate JavaScript files solely for the typedef or one local helper.

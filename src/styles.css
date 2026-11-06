@@ -48,7 +48,7 @@ th:first-child, td:first-child { text-align: left; }.total-cell { font-weight: 8
 .step { padding: 10px 0; border-top: 1px solid #e4e9e7; }.step h4 { margin-bottom: 8px; font-size: 14px; }.step ul { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .step li { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; }.step li strong { color: #286a4a; min-width: 100px; }.empty-step { margin: 0; color: #78827d; font-size: 13px; }
 .birth-summary { margin: 0; color: #52615c; font-size: 14px; }
-.reception-count { color: #277049; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.reception-count, .boundary-count { font-size: inherit; font-weight: 500; white-space: nowrap; }.reception-count { color: #21623f; }.boundary-count { color: #815000; }.boundary-toggle { margin-top: 20px; }
 .receptions { margin-top: 18px; padding-top: 18px; border-top: 1px solid #e4e9e7; }.receptions h3 { margin-bottom: 10px; font-size: 16px; }.receptions ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding-left: 20px; }.receptions li { overflow-wrap: anywhere; }.empty-receptions { margin: 0; color: #78827d; }
 .reception-group + .reception-group { margin-top: 12px; }.reception-group h5 { margin: 0 0 6px; font-size: 13px; }.reception-group ul { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }.reception-group li { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; }.reception-group li strong { color: #286a4a; min-width: 100px; }
 @media (max-width: 900px) { .top-layout { flex-direction: column; }.top-layout > * { flex-basis: auto; width: 100%; } }

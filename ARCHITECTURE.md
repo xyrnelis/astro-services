@@ -41,13 +41,17 @@ There is no application server, router or global client store in the reviewed so
 
 - `src/domain/channels.js`: single channel catalog (`CHANNELS`), planet IDs/order and labels.
 - `src/domain/channel-relations.js`: lookup maps and sign rulers derived from `CHANNELS`.
+- `src/domain/zodiac-signs.js`: zodiac signs in longitude order, shared with astronomy.
+- `src/domain/find-boundary-memberships.js`: additional sign and house memberships near boundaries.
 - `src/domain/calculate-channels.js`: input validation, eight award steps, 6 x 6 numeric
   matrix, per-award events, totals, leaders and symmetry check.
+- `src/domain/calculate-with-boundaries.js`: natal boundary contributions and composite score variants.
+- `src/domain/score-options.js`: shared valid option keys and their decoding.
 - `src/domain/calculate-with-receptions.js`: baseline and virtual-exchange score aggregation,
   reception events, score variants and precomputed ranking snapshots.
 - `src/domain/find-receptions.js`: mutual domicile-by-sign reception detection from original
-  chart positions.
-- Virtual position exchange and reception bonuses are absent.
+  chart positions and separate boundary sign configurations; see the [reception contract](docs/models/RECEPTION-CONTRACT.md).
+- Each reception pair is exchanged independently in virtual positions; its events add reception points to the baseline scores.
 
 ## Current calculation flow
 

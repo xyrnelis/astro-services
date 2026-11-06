@@ -108,7 +108,7 @@ it('renders all channels, expandable steps, and the Proserpina notice', () => {
   assert.match(markup, /Шаг 1/);
   assert.match(markup, /astro-icons\.svg#planet-sun/);
   assert.match(markup, /astro-icons\.svg#sign-capricorn/);
-  assert.match(markup, /Планеты в соединении с <svg class="astro-symbol" role="img" aria-label="Солнце" title="Солнце"[^>]+><use href="\.\/astro-icons\/astro-icons\.svg#planet-sun"><\/use><\/svg>/);
+  assert.match(markup, /Планеты в соединении с <svg class="astro-symbol astro-symbol-planet" role="img" aria-label="Солнце" title="Солнце"[^>]+><use href="\.\/astro-icons\/astro-icons\.svg#planet-sun"><\/use><\/svg>/);
   assert.match(markup, /astro-icons\.svg#planet-sun"><\/use><\/svg> <svg class="astro-symbol" role="img" aria-label="Соединение" title="Соединение"[^>]+><use href="\.\/astro-icons\/astro-icons\.svg#aspect-conjunction/);
   assert.doesNotMatch(markup, /zodiacfonts|<img class="astro-symbol"/);
   assert.doesNotMatch(markup, /72 начислений|53\.2000, 29\.2000/);
@@ -155,6 +155,49 @@ it('renders the reception empty state', () => {
   } }, undefined, []);
 
   assert.match(markup, /Взаимные рецепции не обнаружены/);
+});
+
+it('renders prepared boundary memberships and reception configurations without changing existing output or inputs', () => {
+  const chart = { positions: structuredClone(fixtures.cases[0].positions) };
+  const receptions = [{ id: 'Sun:Saturn', planets: ['Sun', 'Saturn'] }];
+  const memberships = [
+    { planetId: 'Sun', natalSign: 'Aries', natalHouse: 1, kind: 'sign', addedSign: 'Pisces', boundaryLongitude: 0, distanceDegrees: 0 },
+    { planetId: 'Sun', natalSign: 'Aries', natalHouse: 1, kind: 'house', addedHouse: 12, cuspHouse: 1, cuspLongitude: 0, distanceDegrees: 0 },
+    { planetId: 'Sun', natalSign: 'Aries', natalHouse: 1, kind: 'house', addedHouse: 2, cuspHouse: 2, cuspLongitude: 2, distanceDegrees: 1 },
+    { planetId: 'Mercury', natalSign: 'Aries', natalHouse: 5, kind: 'sign', addedSign: 'Taurus', boundaryLongitude: 30, distanceDegrees: 1 },
+  ];
+  const boundaryReceptions = [
+    { id: 'Mercury:Venus:Taurus:Gemini', pairId: 'Mercury:Venus', planets: ['Mercury', 'Venus'], signs: ['Taurus', 'Gemini'], triggerIds: ['Mercury:sign:Taurus'] },
+    { id: 'Sun:Saturn:Aquarius:Leo', pairId: 'Sun:Saturn', planets: ['Sun', 'Saturn'], signs: ['Aquarius', 'Leo'], triggerIds: ['Sun:sign:Aquarius'] },
+    { id: 'Sun:Saturn:Capricorn:Cancer', pairId: 'Sun:Saturn', planets: ['Sun', 'Saturn'], signs: ['Capricorn', 'Cancer'], triggerIds: ['Saturn:sign:Cancer'] },
+  ];
+  const before = structuredClone({ chart, receptions, memberships, boundaryReceptions });
+  const baseline = renderPositions(chart, undefined, receptions);
+  const empty = renderPositions(chart, undefined, receptions, { memberships: [], boundaryReceptions: [] });
+  assert.match(empty, /Пограничные положения не обнаружены/);
+  assert.match(empty, /Взаимные рецепции с пограничностью не обнаружены/);
+  assert.doesNotMatch(baseline, /Пограничности|Взаимные рецепции с пограничностью/);
+
+  const markup = renderPositions(chart, undefined, receptions, { memberships, boundaryReceptions });
+  const table = baseline.match(/<div class="table-scroll">.*?<\/div>/)[0];
+  const originalList = baseline.match(/<section class="receptions">.*?<\/section>/)[0];
+  assert.ok(markup.includes(table));
+  assert.ok(markup.includes(originalList));
+  assert.ok(markup.indexOf(table) < markup.indexOf('Пограничности'));
+  assert.ok(markup.indexOf(originalList) < markup.indexOf('Взаимные рецепции с пограничностью'));
+  const boundaryList = markup.split('Пограничности')[1].split(originalList)[0];
+  assert.ok(boundaryList.indexOf(PLANET_LABELS.Sun) < boundaryList.indexOf(SIGN_LABELS.Pisces));
+  assert.ok(boundaryList.indexOf(HOUSE_LABELS[12]) < boundaryList.indexOf(HOUSE_LABELS[2]));
+  assert.match(boundaryList, /Граница дома/g);
+  assert.ok(boundaryList.includes(PLANET_LABELS.Mercury));
+  assert.ok(boundaryList.includes(SIGN_LABELS.Taurus));
+  const boundaryReceptionList = markup.split('Взаимные рецепции с пограничностью')[1];
+  assert.match(boundaryReceptionList, /Меркурий в Тельце.*Венера в Близнецах/);
+  assert.match(boundaryReceptionList, /Солнце в Водолее.*Сатурн в Льве/);
+  assert.match(boundaryReceptionList, /Солнце в Козероге.*Сатурн в Раке/);
+  assert.ok(boundaryReceptionList.includes(SIGN_LABELS.Aquarius));
+  assert.ok(boundaryReceptionList.includes(SIGN_LABELS.Cancer));
+  assert.deepEqual({ chart, receptions, memberships, boundaryReceptions }, before);
 });
 
 it('highlights one or two next-best matrix values, but not three', () => {
@@ -212,4 +255,77 @@ it('omits zero reception breakdowns from the reception-inclusive view', () => {
 
   assert.doesNotMatch(markup, /рец\)/);
   assert.doesNotMatch(markup, /\d+ \/ \d+/);
+});
+
+it('selects cached Feature-03 results and displays their score provenance', () => {
+  const values = Array.from({ length: 6 }, () => Array(6).fill(5));
+  const totals = Array(6).fill(30);
+  const ranking = buildRankingSnapshot(values, totals);
+  const variant = (boundary, reception) => ({
+    matrix: values.map((row) => row.map((base) => ({ base, boundary, reception, total: base + boundary + reception }))),
+    rowTotals: totals.map((base) => ({ base, boundary, reception, total: base + boundary + reception })),
+    ranking, boundaries: [], receptions: [],
+  });
+  const result = {
+    base: { calculation: { matrix: values, rowTotals: totals, events: [] }, ranking },
+    variants: { '1000': variant(0, 3) },
+    boundaryVariants: { '0100': variant(2, 0) },
+    combinedVariants: { '1000:0100': variant(2, 3) },
+  };
+  const state = { positions: {}, pairs: [], result };
+  const before = structuredClone(state);
+  const baseline = renderResults(state, false, '1000', { includeBoundaries: false, boundaryOptionKey: '0100' });
+  const reception = renderResults(state, true, '1000', { includeBoundaries: false, boundaryOptionKey: '0100' });
+  const boundary = renderResults(state, false, '1000', { includeBoundaries: true, boundaryOptionKey: '0100' });
+  const combined = renderResults(state, true, '1000', { includeBoundaries: true, boundaryOptionKey: '0100' });
+  const plain = (markup) => markup.replace(/<[^>]+>/g, '');
+  assert.doesNotMatch(plain(baseline), /5 \/ 10|Шаг 9/);
+  assert.match(plain(reception), /5 \/ 8 \(\+3 рец\.\)/);
+  assert.match(plain(boundary), /5 \/ 7 \(\+2 погр\.\)/);
+  assert.match(plain(combined), /5 \/ 10 \(\+2п, \+3р\)/);
+  assert.match(combined, /class="boundary-count"/);
+  assert.match(combined, /class="reception-count"/);
+  assert.match(styles, /\.reception-count, \.boundary-count \{ font-size: inherit;/);
+  assert.match(styles, /\.reception-count \{ color: #21623f; \}/);
+  assert.match(styles, /\.boundary-count \{ color: #815000; \}/);
+  assert.doesNotMatch(boundary, /Шаг 9/);
+  assert.deepEqual(state, before);
+});
+
+it('renders natal and post-exchange boundary events in their own steps and reception instances', () => {
+  const positions = { Sun: { sign: 'Capricorn', house: 1 }, Saturn: { sign: 'Leo', house: 5 } };
+  const pairs = [{ id: 'Sun:Saturn', planets: ['Sun', 'Saturn'] }];
+  const boundaryReceptions = [{ id: 'Sun:Saturn:Aquarius:Leo', pairId: 'Sun:Saturn', planets: ['Sun', 'Saturn'], signs: ['Aquarius', 'Leo'] }];
+  const values = Array.from({ length: 6 }, () => Array(6).fill(0));
+  const totals = Array(6).fill(0);
+  const ranking = buildRankingSnapshot(values, totals);
+  const event = (step, reason) => ({ sourceChannel: 'luminaries', targetIndex: 0, step, reason });
+  const scores = values.map((row) => row.map(() => ({ base: 0, boundary: 0, reception: 0, total: 0 })));
+  const selected = {
+    matrix: scores, rowTotals: scores.map((row) => row[0]), ranking,
+    boundaries: [{ events: [event(2, 'natal boundary')] }],
+    receptions: [
+      { pairId: 'Sun:Saturn', events: [event(3, 'ordinary exchange')], boundaryEvents: [event(5, 'stationary partner')] },
+      { pairId: 'Sun:Saturn:Aquarius:Leo', events: [], boundaryEvents: [event(8, 'second configuration')] },
+    ],
+  };
+  const result = {
+    base: { calculation: { matrix: values, rowTotals: totals, events: [event(2, 'baseline event')] }, ranking },
+    variants: { '0111': { ...selected, boundaries: [], receptions: [selected.receptions[0]] } },
+    boundaryVariants: { '0111': selected }, combinedVariants: { '0111:0111': selected },
+  };
+  const state = { positions, pairs, boundaryReceptions, result };
+  const markup = renderResults(state, true, '0111', { includeBoundaries: true, boundaryOptionKey: '0111' });
+  const channel = markup.split('data-channel="luminaries"')[1].split('</details>')[0];
+  const step2 = channel.split('Шаг 2:')[1].split('Шаг 3:')[0];
+  assert.match(step2, /baseline event/);
+  assert.match(step2, /natal boundary \(погр\)/);
+  assert.equal((channel.match(/baseline event/g) ?? []).length, 1);
+  assert.match(channel, /Шаг 5: stationary partner \(погр\)/);
+  assert.match(channel, /Шаг 8: second configuration \(погр\)/);
+  assert.equal((channel.match(/class="reception-group"/g) ?? []).length, 2);
+  assert.match(channel, /Водолее.*Льве/);
+  const receptionOnly = renderResults(state, true);
+  assert.match(receptionOnly, /ordinary exchange/);
+  assert.doesNotMatch(receptionOnly, /natal boundary|stationary partner|second configuration/);
 });

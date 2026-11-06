@@ -6,13 +6,9 @@ import {
   channelIndexById,
 } from './channel-relations.js';
 import { buildRankingSnapshot, calculateChannels, createStepReason } from './calculate-channels.js';
+import { OPTION_KEYS, optionsFromKey } from './score-options.js';
 
-const OPTION_KEYS = [
-  '0000', '1000', '0100', '1100', '0010', '1010',
-  '0110', '1110', '0011', '1011', '0111', '1111',
-];
-
-function validatePairs(pairs) {
+export function validatePairs(pairs) {
   const seenIds = new Set();
   for (const pair of pairs) {
     const [first, second] = pair?.planets ?? [];
@@ -28,15 +24,6 @@ function validatePairs(pairs) {
     }
     seenIds.add(pair.id);
   }
-}
-
-function optionsFromKey(key) {
-  return {
-    includeStepsSevenAndEight: key[0] === '1',
-    includeSameChannelHouses: key[1] === '1',
-    includeSameChannelSigns: key[2] === '1',
-    includeSameChannelConjunctions: key[3] === '1',
-  };
 }
 
 function score(base = 0, reception = 0) {
@@ -92,7 +79,7 @@ function sortedCandidateIds(candidateIds) {
   return CHANNELS.filter((channel) => candidateIds.has(channel.id)).map((channel) => channel.id);
 }
 
-function createPairContribution(positions, pair, options) {
+export function createPairContribution(positions, pair, options) {
   const virtualPositions = independentlyExchangePositions(positions, pair);
   const exchangedPlanets = new Set(pair.planets);
   const candidateIds = new Set();
@@ -197,7 +184,7 @@ function createPairContribution(positions, pair, options) {
   };
 }
 
-function createVariant(baseline, positions, pairs, options) {
+export function createReceptionVariant(baseline, positions, pairs, options) {
   const receptions = pairs.map((pair) => createPairContribution(positions, pair, options));
   const matrix = baseline.matrix.map((row) => row.map((points) => score(points)));
   for (const reception of receptions) {
@@ -232,7 +219,7 @@ export function calculateWithReceptions(positions, pairs) {
   };
   const variants = Object.fromEntries(OPTION_KEYS.map((key) => [
     key,
-    createVariant(calculation, positions, pairs, optionsFromKey(key)),
+    createReceptionVariant(calculation, positions, pairs, optionsFromKey(key)),
   ]));
 
   return { base, variants };

@@ -1,9 +1,5 @@
 import { PLANETS } from '../domain/channels.js';
-
-const SIGN_NAMES = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
-];
+import { SIGN_NAMES } from '../domain/zodiac-signs.js';
 
 const BODIES = {
   Sun: 'Sun', Moon: 'Moon', Mercury: 'Mercury', Venus: 'Venus', Mars: 'Mars',
@@ -46,9 +42,6 @@ function getCusps(cusps) {
 
 function houseForLongitude(longitude, cusps) {
   const normalized = normalizeDegrees(longitude);
-  if (cusps.some((cusp) => Math.abs(normalizeDegrees(normalized - cusp)) < 1e-9)) {
-    throw new ChartCalculationError('cusp-boundary', 'Объект расположен точно на куспиде дома; дом нельзя определить однозначно.');
-  }
   for (let index = 0; index < 12; index += 1) {
     const start = cusps[index];
     const end = cusps[(index + 1) % 12];
